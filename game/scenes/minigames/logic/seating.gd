@@ -11,13 +11,19 @@ const FEEDBACK_TIME := 1.5
 const CURSOR_COLOR := Color(1.0, 0.85, 0.3)
 const PICKED_COLOR := Color(1.0, 0.45, 0.2)
 
-## Имена и цвета заглушек маскотов (как в хабе, scenes/world.tscn).
+## Имена, цвета стульев и спрайты маскотов.
 const NAMES := {"manya": "Маня", "lenya": "Леня", "katya": "Катя", "moyto": "Мойто"}
 const COLORS := {
 	"manya": Color(0.93, 0.55, 0.65),
 	"lenya": Color(0.55, 0.7, 0.95),
 	"katya": Color(0.75, 0.55, 0.95),
 	"moyto": Color(0.95, 0.65, 0.3),
+}
+const SPRITES := {
+	"manya": preload("res://art/characters/manya.png"),
+	"lenya": preload("res://art/characters/lenya.png"),
+	"katya": preload("res://art/characters/katya.png"),
+	"moyto": preload("res://art/characters/moyto.png"),
 }
 
 ## Условие: [тип, маскот, маскот или номер стула (с нуля), текст].
@@ -247,9 +253,13 @@ func build_seats() -> void:
 	seat_labels.clear()
 	for i in seats.size():
 		var label := Label.new()
-		label.custom_minimum_size = Vector2(64, 40)
+		label.custom_minimum_size = Vector2(64, 72)
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+		var portrait := TextureRect.new()
+		portrait.name = "Portrait"
+		portrait.position = Vector2(16, 4)
+		label.add_child(portrait)
 		label.add_theme_font_size_override("font_size", 12)
 		label.add_theme_color_override("font_color", Color(0.15, 0.12, 0.1))
 		seat_row.add_child(label)
@@ -262,6 +272,7 @@ func update_seats() -> void:
 	for i in seat_labels.size():
 		var mascot: String = seats[i]
 		seat_labels[i].text = NAMES[mascot]
+		seat_labels[i].get_node("Portrait").texture = SPRITES[mascot]
 		seat_labels[i].add_theme_stylebox_override("normal", make_box(COLORS[mascot], i))
 	done_label.add_theme_stylebox_override("normal", make_box(Color(0.3, 0.45, 0.3), seats.size()))
 
@@ -306,7 +317,7 @@ func build_ui() -> void:
 
 	done_label = Label.new()
 	done_label.text = "Готово"
-	done_label.custom_minimum_size = Vector2(64, 40)
+	done_label.custom_minimum_size = Vector2(64, 72)
 	done_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	done_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	done_label.add_theme_font_size_override("font_size", 12)

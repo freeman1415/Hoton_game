@@ -51,7 +51,7 @@ game/
   scenes/hub/mascot_npc.tscn — маскот в хабе (зона, заглушка-кружок, разговор по Enter)
   scenes/minigames/quiz/ — викторина Мойто
   scenes/minigames/cosplay/ — «Собери образ» Кати
-  scenes/minigames/art/ — «Собери эскиз» Мани (картинка рисуется кодом, заглушка)
+  scenes/minigames/art/ — «Собери эскиз» Мани (картинка — art/minigames/manya_sketch.png)
   scenes/minigames/logic/ — «Рассади слушателей» Сулуса
   scenes/finale/       — финал: вопросы ГДЕ/КТО/ЗАЧЕМ, концовки, итоги
   scenes/ui/title.tscn — титульный экран, топ-5, Ctrl+Shift+F12 — сброс рекордов
@@ -62,6 +62,7 @@ game/
   scripts/game_state.gd — autoload `GameState`: печати, улики, таймер, рестарт по R
   scripts/leaderboard.gd — autoload `Leaderboard`: топ-5 в user://leaderboard.cfg
   art/ui/logo_hoton.png — логотип для титульного экрана
+  art/characters/ props/ tiles/ minigames/ — пиксель-арт (черновик, собирается tools/pixel_art/build.py)
   scripts/hud.gd       — счётчик печатей в хабе
   ritm/                — ритм-игра (Леня): main.tscn, main.gd, note.tscn, note.gd, музыка
 ```
@@ -85,6 +86,13 @@ game/
 - Stretch mode `canvas_items`: спрайты масштабируются блочно, а текст диалогов и UI остаётся чётким (по решению — диалоги не обязаны быть пиксельными).
 - **Базовое разрешение 640×360** (решено 2026-10-14), `scale_mode = integer`: на 1080p ровно ×3, на 720p ×2. Окно при запуске — 1280×720. Все координаты и размеры шрифтов — в этих 640×360. Шрифт UI: 10–16 px.
 - Мини-игры строить на контейнерах и якорях, а не на абсолютных координатах.
+
+## Спрайты и хаб
+
+- Пиксель-арт собирает `python tools/pixel_art/build.py` (нужен Pillow) в `game/art/`. Сборка **перезаписывает** PNG: перерисованный вручную спрайт сначала убрать из `build.py`.
+- **Точка ног — низ спрайта.** Маскот: низ картинки на `BODY_RADIUS` (16 px) ниже центра NPC. Игрок: `SPRITE_OFFSET` в `scripts/character_body_2d.gd`. Декорации: `centered = false`, `offset = (-w/2, -h)`. При перерисовке размеры менять можно, но ноги должны оставаться на нижнем крае.
+- Спрайт маскота в хабе: `mascot_npc.gd` сам грузит `art/characters/<mascot>.png`. Нет файла — рисуется только зона (так у главной сцены).
+- Хаб (`world.tscn`) сортируется по Y (`y_sort_enabled`): декорации — в узле `Decor`, плитка — `Ground` (`z_index = -10`), круги зон — `z_index = -1`. Края карты — стены в `collisions` и `limit_*` у камеры.
 
 ## Соглашения по именам
 

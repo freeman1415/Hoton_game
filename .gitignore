@@ -16,3 +16,6 @@ desktop.ini
 
 # Вывод генераторов пиксель-арта (черновики, не финальные ассеты)
 pixellab-forge-output/
+
+# Python
+__pycache__/

@@ -1,7 +1,17 @@
 [gd_scene format=3 uid="uid://cxuyggswuob6m"]
 
 [ext_resource type="Script" uid="uid://cam3iytw1qi4q" path="res://scripts/character_body_2d.gd" id="1_k0juu"]
-[ext_resource type="Texture2D" uid="uid://7krphvdi8yo8" path="res://icon.svg" id="2_71j4m"]
+[ext_resource type="Texture2D" path="res://art/props/main_stage.png" id="20_main_stage"]
+[ext_resource type="Texture2D" path="res://art/props/music_stage.png" id="20_music_stage"]
+[ext_resource type="Texture2D" path="res://art/props/rocket.png" id="20_rocket"]
+[ext_resource type="Texture2D" path="res://art/props/art_stall.png" id="20_art_stall"]
+[ext_resource type="Texture2D" path="res://art/props/circus_tent.png" id="20_circus_tent"]
+[ext_resource type="Texture2D" path="res://art/props/lecture.png" id="20_lecture"]
+[ext_resource type="Texture2D" path="res://art/props/runway.png" id="20_runway"]
+[ext_resource type="Texture2D" path="res://art/props/gate.png" id="20_gate"]
+[ext_resource type="Texture2D" path="res://art/props/pine.png" id="20_pine"]
+[ext_resource type="Texture2D" path="res://art/tiles/ground.png" id="20_ground"]
+[ext_resource type="Texture2D" path="res://art/characters/player_down.png" id="20_player"]
 [ext_resource type="Script" path="res://scripts/hud.gd" id="6_hud"]
 [ext_resource type="PackedScene" path="res://scenes/hub/mascot_npc.tscn" id="7_npc"]
 [ext_resource type="PackedScene" path="res://scenes/ui/notebook.tscn" id="13_notebook"]
@@ -18,7 +28,22 @@ radius = 14.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_k5x2g"]
 radius = 20.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_h"]
+size = Vector2(960, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
+size = Vector2(40, 704)
+
 [node name="world" type="Node2D" unique_id=1883516530]
+y_sort_enabled = true
+
+[node name="Ground" type="Sprite2D" parent="."]
+z_index = -10
+texture_repeat = 2
+position = Vector2(115, -15)
+texture = ExtResource("20_ground")
+region_enabled = true
+region_rect = Rect2(0, 0, 960, 704)
 
 [node name="Manya" parent="." instance=ExtResource("7_npc")]
 position = Vector2(0, 0)
@@ -76,12 +101,16 @@ script = ExtResource("1_k0juu")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1723280633]
 scale = Vector2(0.25, 0.25)
-texture = ExtResource("2_71j4m")
+texture = ExtResource("20_player")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=686410681]
 shape = SubResource("CircleShape2D_k0juu")
 
 [node name="Camera2D" type="Camera2D" parent="Player" unique_id=216193385]
+limit_left = -365
+limit_top = -367
+limit_right = 595
+limit_bottom = 337
 
 [node name="Direction" type="Marker2D" parent="Player" unique_id=2128137089]
 
@@ -94,7 +123,147 @@ collision_mask = 16
 position = Vector2(20, 0)
 shape = SubResource("CircleShape2D_k5x2g")
 
+
+[node name="Decor" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Gate" type="Sprite2D" parent="Decor"]
+position = Vector2(-110, 30)
+texture = ExtResource("20_gate")
+centered = false
+offset = Vector2(-40, -60)
+
+[node name="ArtStall" type="Sprite2D" parent="Decor"]
+position = Vector2(-50, -10)
+texture = ExtResource("20_art_stall")
+centered = false
+offset = Vector2(-30, -48)
+
+[node name="MainStageProp" type="Sprite2D" parent="Decor"]
+position = Vector2(210, -18)
+texture = ExtResource("20_main_stage")
+centered = false
+offset = Vector2(-48, -60)
+
+[node name="Rocket" type="Sprite2D" parent="Decor"]
+position = Vector2(262, -236)
+texture = ExtResource("20_rocket")
+centered = false
+offset = Vector2(-15, -66)
+
+[node name="MusicStage" type="Sprite2D" parent="Decor"]
+position = Vector2(200, -226)
+texture = ExtResource("20_music_stage")
+centered = false
+offset = Vector2(-36, -52)
+
+[node name="Lecture" type="Sprite2D" parent="Decor"]
+position = Vector2(-200, -226)
+texture = ExtResource("20_lecture")
+centered = false
+offset = Vector2(-32, -50)
+
+[node name="Runway" type="Sprite2D" parent="Decor"]
+position = Vector2(440, -22)
+texture = ExtResource("20_runway")
+centered = false
+offset = Vector2(-32, -48)
+
+[node name="CircusTent" type="Sprite2D" parent="Decor"]
+position = Vector2(200, 170)
+texture = ExtResource("20_circus_tent")
+centered = false
+offset = Vector2(-34, -60)
+
+[node name="Pine1" type="Sprite2D" parent="Decor"]
+position = Vector2(-300, -280)
+texture = ExtResource("20_pine")
+centered = false
+offset = Vector2(-13, -44)
+
+[node name="Pine2" type="Sprite2D" parent="Decor"]
+position = Vector2(-320, -60)
+texture = ExtResource("20_pine")
+centered = false
+offset = Vector2(-13, -44)
+
+[node name="Pine3" type="Sprite2D" parent="Decor"]
+position = Vector2(-300, 180)
+texture = ExtResource("20_pine")
+centered = false
+offset = Vector2(-13, -44)
+
+[node name="Pine4" type="Sprite2D" parent="Decor"]
+position = Vector2(-120, 250)
+texture = ExtResource("20_pine")
+centered = false
+offset = Vector2(-13, -44)
+
+[node name="Pine5" type="Sprite2D" parent="Decor"]
+position = Vector2(60, 270)
+texture = ExtResource("20_pine")
+centered = false
+offset = Vector2(-13, -44)
+
+[node name="Pine6" type="Sprite2D" parent="Decor"]
+position = Vector2(380, 250)
+texture = ExtResource("20_pine")
+centered = false
+offset = Vector2(-13, -44)
+
+[node name="Pine7" type="Sprite2D" parent="Decor"]
+position = Vector2(540, 180)
+texture = ExtResource("20_pine")
+centered = false
+offset = Vector2(-13, -44)
+
+[node name="Pine8" type="Sprite2D" parent="Decor"]
+position = Vector2(540, -260)
+texture = ExtResource("20_pine")
+centered = false
+offset = Vector2(-13, -44)
+
+[node name="Pine9" type="Sprite2D" parent="Decor"]
+position = Vector2(420, -300)
+texture = ExtResource("20_pine")
+centered = false
+offset = Vector2(-13, -44)
+
+[node name="Pine10" type="Sprite2D" parent="Decor"]
+position = Vector2(60, -300)
+texture = ExtResource("20_pine")
+centered = false
+offset = Vector2(-13, -44)
+
+[node name="Pine11" type="Sprite2D" parent="Decor"]
+position = Vector2(-60, -160)
+texture = ExtResource("20_pine")
+centered = false
+offset = Vector2(-13, -44)
+
+[node name="Pine12" type="Sprite2D" parent="Decor"]
+position = Vector2(330, -150)
+texture = ExtResource("20_pine")
+centered = false
+offset = Vector2(-13, -44)
+
 [node name="collisions" type="StaticBody2D" parent="." unique_id=1151166463]
+
+[node name="WallTop" type="CollisionShape2D" parent="collisions"]
+position = Vector2(115, -347)
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="WallBottom" type="CollisionShape2D" parent="collisions"]
+position = Vector2(115, 317)
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="WallLeft" type="CollisionShape2D" parent="collisions"]
+position = Vector2(-345, -15)
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="WallRight" type="CollisionShape2D" parent="collisions"]
+position = Vector2(575, -15)
+shape = SubResource("RectangleShape2D_wall_v")
 
 [node name="Hud" type="CanvasLayer" parent="."]
 script = ExtResource("6_hud")

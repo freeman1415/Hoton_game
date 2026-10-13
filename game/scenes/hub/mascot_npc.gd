@@ -1,5 +1,5 @@
 extends Area2D
-## Маскот в хабе: зона, сам маскот (пока заглушка-кружок) и разговор по Enter.
+## Маскот в хабе: зона, спрайт маскота (art/characters/<mascot>.png) и разговор по Enter.
 ## Используется и для главной сцены (mascot = "stage").
 ## Игрок находит его через ActionableFinder (слой 5 «Actionables») и вызывает action().
 
@@ -17,13 +17,29 @@ extends Area2D
 const BODY_RADIUS := 16.0
 const ZONE_RADIUS := 80.0
 const STAMP_COLOR := Color(0.95, 0.75, 0.2)
+const SPRITE_PATH := "res://art/characters/%s.png"
+## «Дыхание» спрайта: период в секундах.
+const BOB_PERIOD := 1.2
 
 var _player_near := false
+## Спрайт маскота; у главной сцены его нет — её рисует декорация в хабе.
+var _sprite: Texture2D
+var _time := 0.0
+var _zone: Node2D
 
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	var path := SPRITE_PATH % mascot
+	if ResourceLoader.exists(path):
+		_sprite = load(path)
+	# Круг зоны — на земле, под игроком и декорациями (хаб сортируется по Y)
+	_zone = Node2D.new()
+	_zone.z_index = -1
+	_zone.draw.connect(_draw_zone)
+	add_child(_zone)
+	_time = randf() * BOB_PERIOD
 	if auto_start and not GameState.has_met(mascot):
 		action.call_deferred()
 
@@ -32,28 +48,40 @@ func action() -> void:
 	DialogueManager.show_dialogue_balloon(dialogue_resource, dialogue_start)
 
 
-func _process(_delta: float) -> void:
-	# Подсказка «Enter» прячется на время разговора
+func _process(delta: float) -> void:
+	_time += delta
+	# Подсказка «Enter» прячется на время разговора, спрайт «дышит»
 	queue_redraw()
+
+
+func _draw_zone() -> void:
+	var zone_color := color
+	zone_color.a = 0.15
+	_zone.draw_circle(Vector2.ZERO, ZONE_RADIUS, zone_color)
 
 
 func _draw() -> void:
 	var font := ThemeDB.fallback_font
-	var zone_color := color
-	zone_color.a = 0.15
-	draw_circle(Vector2.ZERO, ZONE_RADIUS, zone_color)
-	draw_string(font, Vector2(-ZONE_RADIUS, -ZONE_RADIUS + 14), zone_name,
+	# Название зоны — у нижнего края круга: сверху его закрыли бы декорации
+	draw_string(font, Vector2(-ZONE_RADIUS, ZONE_RADIUS - 6), zone_name,
 		HORIZONTAL_ALIGNMENT_CENTER, ZONE_RADIUS * 2, 12)
 
-	draw_circle(Vector2.ZERO, BODY_RADIUS, color)
-	draw_string(font, Vector2(-60, BODY_RADIUS + 14), display_name,
-		HORIZONTAL_ALIGNMENT_CENTER, 120, 11)
+	# Ноги спрайта — на нижнем краю тела, чтобы сортировка по Y была честной
+	var head_y := -BODY_RADIUS
+	if _sprite:
+		var bob := 1.0 if fmod(_time, BOB_PERIOD) < BOB_PERIOD / 2 else 0.0
+		var sprite_size := _sprite.get_size()
+		var top_left := Vector2(-floorf(sprite_size.x / 2), BODY_RADIUS - sprite_size.y + bob)
+		draw_texture(_sprite, top_left)
+		head_y = top_left.y
+		draw_string(font, Vector2(-60, BODY_RADIUS + 14), display_name,
+			HORIZONTAL_ALIGNMENT_CENTER, 120, 11)
 
 	if GameState.has_stamp(mascot):
-		draw_circle(Vector2(BODY_RADIUS, -BODY_RADIUS), 6, STAMP_COLOR)
+		draw_circle(Vector2(BODY_RADIUS, head_y + 4), 5, STAMP_COLOR)
 
 	if _player_near and not GameState.in_dialogue:
-		draw_string(font, Vector2(-100, -BODY_RADIUS - 6), prompt,
+		draw_string(font, Vector2(-100, head_y - 4), prompt,
 			HORIZONTAL_ALIGNMENT_CENTER, 200, 10)
 
 

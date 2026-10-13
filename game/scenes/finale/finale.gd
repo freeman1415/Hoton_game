@@ -8,13 +8,13 @@ const SELECTED_COLOR := Color(1.0, 0.85, 0.3)
 const NORMAL_COLOR := Color(1, 1, 1)
 const MAX_OPTIONS := 5
 
-## Цвета заглушек маскотов (как в хабе, scenes/world.tscn).
-const MASCOT_COLORS := {
-	"manya": Color(0.93, 0.55, 0.65),
-	"lenya": Color(0.55, 0.7, 0.95),
-	"katya": Color(0.75, 0.55, 0.95),
-	"moyto": Color(0.95, 0.65, 0.3),
-	"sulus": Color(0.6, 0.8, 0.5),
+## Спрайты маскотов (собираются tools/pixel_art/build.py).
+const MASCOT_SPRITES := {
+	"manya": preload("res://art/characters/manya.png"),
+	"lenya": preload("res://art/characters/lenya.png"),
+	"katya": preload("res://art/characters/katya.png"),
+	"moyto": preload("res://art/characters/moyto.png"),
+	"sulus": preload("res://art/characters/sulus.png"),
 }
 
 const QUESTION_ORDER := ["where", "who", "why"]
@@ -364,7 +364,10 @@ func draw_mascots() -> void:
 		var center := Vector2(step * (i + 0.5), 40)
 		if mascot == speaker:
 			center.y -= 8
-		mascot_row.draw_circle(center, 18, MASCOT_COLORS[mascot])
+		var sprite: Texture2D = MASCOT_SPRITES[mascot]
+		# ноги — на линии center.y + 18, как раньше нижний край кружка
+		mascot_row.draw_texture(sprite, center + Vector2(-floorf(sprite.get_width() / 2.0),
+			18 - sprite.get_height()))
 		mascot_row.draw_string(font, center + Vector2(-50, 34), GameState.MASCOT_INFO[mascot].name,
 			HORIZONTAL_ALIGNMENT_CENTER, 100, 11)
 
