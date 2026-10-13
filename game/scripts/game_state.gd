@@ -27,7 +27,15 @@ const CLUES := {
 		"text": "«Как придумать хорошую загадку: 1) спрячь предмет на виду; 2) оставь подсказки у друзей…» Тот же почерк с кляксой."},
 }
 
+## Мини-игры по маскотам. Кого нет в списке — у того мини-игра ещё не готова.
+const MINIGAMES := {
+	"lenya": "res://ritm/main.tscn",
+	"moyto": "res://scenes/minigames/quiz/quiz.tscn",
+}
+
 var stamps: Array[String] = []
+## С кем игрок уже поговорил в этом забеге.
+var met: Array[String] = []
 var secret_dialogues: Array[String] = []
 var mistakes := 0
 var run_time := 0.0
@@ -36,11 +44,18 @@ var run_active := false
 ## Где стоял игрок в хабе перед уходом в мини-игру.
 var hub_return_position = null
 
+## Идёт диалог — игрок не ходит.
+var in_dialogue := false
+## Мини-игра, которую попросили запустить из диалога; стартует, когда диалог закроется.
+var pending_minigame := ""
+
 var _restart_held := 0.0
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	DialogueManager.dialogue_started.connect(_on_dialogue_started)
+	DialogueManager.dialogue_ended.connect(_on_dialogue_ended)
 	reset_run()
 
 
@@ -59,7 +74,10 @@ func _process(delta: float) -> void:
 
 func reset_run() -> void:
 	stamps.clear()
+	met.clear()
 	secret_dialogues.clear()
+	in_dialogue = false
+	pending_minigame = ""
 	mistakes = 0
 	run_time = 0.0
 	run_active = true
@@ -107,6 +125,19 @@ func clues_answering(question: String) -> int:
 	return count
 
 
+func mark_met(mascot: String) -> void:
+	if not mascot in met:
+		met.append(mascot)
+
+
+func has_met(mascot: String) -> bool:
+	return mascot in met
+
+
+func has_secret(id: String) -> bool:
+	return id in secret_dialogues
+
+
 func add_secret_dialogue(id: String) -> void:
 	if not id in secret_dialogues:
 		secret_dialogues.append(id)
@@ -119,6 +150,33 @@ func add_mistake() -> void:
 ## Время для лидерборда: реальное + штраф за ошибки в финале.
 func score_time() -> float:
 	return run_time + mistakes * MISTAKE_PENALTY
+
+
+func has_minigame(mascot: String) -> bool:
+	return MINIGAMES.has(mascot)
+
+
+## Вызывается из диалога: `do GameState.request_minigame("lenya")`.
+func request_minigame(mascot: String) -> void:
+	pending_minigame = mascot
+
+
+func start_minigame(mascot: String) -> void:
+	var player := get_tree().current_scene.get_node_or_null("Player") as Node2D
+	var player_position: Vector2 = player.global_position if player else Vector2.ZERO
+	go_to_minigame(MINIGAMES[mascot], player_position)
+
+
+func _on_dialogue_started(_resource: DialogueResource) -> void:
+	in_dialogue = true
+
+
+func _on_dialogue_ended(_resource: DialogueResource) -> void:
+	in_dialogue = false
+	if pending_minigame != "":
+		var mascot := pending_minigame
+		pending_minigame = ""
+		start_minigame.call_deferred(mascot)
 
 
 func go_to_minigame(scene_path: String, player_position: Vector2) -> void:

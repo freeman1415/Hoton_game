@@ -13,6 +13,10 @@ func _ready():
 		GameState.hub_return_position = null
 
 func get_input():
+	# Во время диалога стоим на месте
+	if GameState.in_dialogue:
+		velocity = Vector2.ZERO
+		return
 	var input_direction = Input.get_vector("left","right","up","down")
 	velocity = input_direction * SPEED
 	
@@ -24,6 +28,8 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
 func _unhandled_input(_event: InputEvent) -> void:
+	if GameState.in_dialogue:
+		return
 	if Input.is_action_just_pressed("enter"):
 		var actionables = actionable_finder.get_overlapping_areas()
 		if actionables.size() > 0:

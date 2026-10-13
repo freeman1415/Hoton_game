@@ -2,10 +2,13 @@
 
 [ext_resource type="Script" uid="uid://cam3iytw1qi4q" path="res://scripts/character_body_2d.gd" id="1_k0juu"]
 [ext_resource type="Texture2D" uid="uid://7krphvdi8yo8" path="res://icon.svg" id="2_71j4m"]
-[ext_resource type="PackedScene" uid="uid://jq4emxtvg4v5" path="res://helpers/actionable.tscn" id="3_qfnet"]
-[ext_resource type="Resource" uid="uid://c00juwev7ja4w" path="res://dialogue/main.dialogue" id="4_i7141"]
-[ext_resource type="Script" path="res://scripts/minigame_entrance.gd" id="5_entr"]
 [ext_resource type="Script" path="res://scripts/hud.gd" id="6_hud"]
+[ext_resource type="PackedScene" path="res://scenes/hub/mascot_npc.tscn" id="7_npc"]
+[ext_resource type="Resource" path="res://dialogue/manya.dialogue" id="8_manya"]
+[ext_resource type="Resource" path="res://dialogue/lenya.dialogue" id="9_lenya"]
+[ext_resource type="Resource" path="res://dialogue/katya.dialogue" id="10_katya"]
+[ext_resource type="Resource" path="res://dialogue/moyto.dialogue" id="11_moyto"]
+[ext_resource type="Resource" path="res://dialogue/sulus.dialogue" id="12_sulus"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k0juu"]
 radius = 64.03124
@@ -13,20 +16,55 @@ radius = 64.03124
 [sub_resource type="CircleShape2D" id="CircleShape2D_k5x2g"]
 radius = 60.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_f3jgm"]
-radius = 62.008064
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_hqtel"]
-radius = 89.02247
-
 [node name="world" type="Node2D" unique_id=1883516530]
-position = Vector2(88, 11)
+
+[node name="Manya" parent="." instance=ExtResource("7_npc")]
+position = Vector2(0, 0)
+mascot = "manya"
+display_name = "Маня"
+zone_name = "Арт-маркет"
+color = Color(0.93, 0.55, 0.65, 1)
+dialogue_resource = ExtResource("8_manya")
+auto_start = true
+
+[node name="Lenya" parent="." instance=ExtResource("7_npc")]
+position = Vector2(450, -450)
+mascot = "lenya"
+display_name = "Леня"
+zone_name = "Музыкальная сцена"
+color = Color(0.55, 0.7, 0.95, 1)
+dialogue_resource = ExtResource("9_lenya")
+
+[node name="Katya" parent="." instance=ExtResource("7_npc")]
+position = Vector2(950, 0)
+mascot = "katya"
+display_name = "Катя"
+zone_name = "Косплей-дефиле"
+color = Color(0.75, 0.55, 0.95, 1)
+dialogue_resource = ExtResource("10_katya")
+
+[node name="Moyto" parent="." instance=ExtResource("7_npc")]
+position = Vector2(450, 450)
+mascot = "moyto"
+display_name = "Мойто"
+zone_name = "Конкурсы"
+color = Color(0.95, 0.65, 0.3, 1)
+dialogue_resource = ExtResource("11_moyto")
+
+[node name="Sulus" parent="." instance=ExtResource("7_npc")]
+position = Vector2(-450, -450)
+mascot = "sulus"
+display_name = "Сулус"
+zone_name = "Лекторий"
+color = Color(0.6, 0.8, 0.5, 1)
+dialogue_resource = ExtResource("12_sulus")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=314333407]
-position = Vector2(370, 0)
+position = Vector2(180, 0)
 script = ExtResource("1_k0juu")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1723280633]
+scale = Vector2(0.6, 0.6)
 texture = ExtResource("2_71j4m")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=686410681]
@@ -45,29 +83,7 @@ collision_mask = 16
 position = Vector2(64, -53)
 shape = SubResource("CircleShape2D_k5x2g")
 
-[node name="testnpc" type="Sprite2D" parent="." unique_id=233624291]
-position = Vector2(0, 235)
-texture = ExtResource("2_71j4m")
-
-[node name="Actionable" parent="testnpc" unique_id=2005417934 instance=ExtResource("3_qfnet")]
-dialogue_resourse = ExtResource("4_i7141")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="testnpc/Actionable" unique_id=1571169601]
-shape = SubResource("CircleShape2D_f3jgm")
-
 [node name="collisions" type="StaticBody2D" parent="." unique_id=1151166463]
-
-[node name="RYTHM" type="Sprite2D" parent="." unique_id=1841628286]
-position = Vector2(410, -245)
-texture = ExtResource("2_71j4m")
-
-[node name="tothenextscene" type="Area2D" parent="RYTHM" unique_id=1183782627]
-collision_layer = 16
-script = ExtResource("5_entr")
-next_scene = "uid://oherdqlo7bow"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RYTHM/tothenextscene" unique_id=538595473]
-shape = SubResource("CircleShape2D_hqtel")
 
 [node name="Hud" type="CanvasLayer" parent="."]
 script = ExtResource("6_hud")

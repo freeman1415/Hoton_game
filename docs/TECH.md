@@ -45,13 +45,13 @@ godot --headless --path game --quit-after 180 res://ritm/main.tscn   # прог�
 game/
   project.godot        — главная сцена: scenes/world.tscn
   addons/dialogue_manager/
-  dialogue/main.dialogue — пока заглушка
-  helpers/actionable.tscn — зона «нажми Enter → диалог»
-  scenes/world.tscn    — хаб (игрок, тестовый NPC, вход в ритм-игру, HUD печатей)
+  dialogue/           — по файлу на маскота: manya, lenya, katya, moyto, sulus
+  scenes/world.tscn    — хаб: 5 зон маскотов, игрок, HUD печатей
+  scenes/hub/mascot_npc.tscn — маскот в хабе (зона, заглушка-кружок, разговор по Enter)
+  scenes/minigames/quiz/ — викторина Мойто
   scenes/test.tscn     — тестовая, удалить
   scripts/character_body_2d.gd — движение игрока, возврат на место после мини-игры
   scripts/game_state.gd — autoload `GameState`: печати, улики, таймер, рестарт по R
-  scripts/minigame_entrance.gd — вход в мини-игру (Area2D + Enter)
   scripts/hud.gd       — счётчик печатей в хабе
   ritm/                — ритм-игра (Леня): main.tscn, main.gd, note.tscn, note.gd, музыка
 ```
@@ -78,8 +78,6 @@ game/
 
 Известный техдолг по именам (переименовывать через редактор, не через проводник):
 - папка `ritm/` → `scenes/minigames/rhythm/`;
-- узел `RYTHM` → `RhythmEntrance`;
-- `@export var dialogue_resourse` в `helpers/actionable.tscn` → `dialogue_resource` (после переименования переназначить ресурс в инспекторе у всех NPC);
 - `scripts/character_body_2d.gd` → `scripts/player.gd`;
 
 ## Управление (Input Map)
@@ -91,6 +89,7 @@ game/
 | `notebook` (блокнот) | Tab | действие есть, блокнота ещё нет |
 | `restart` | R (удерживать 1 с) | есть, обрабатывает `GameState` |
 | `lane_0` … `lane_3` (ритм-игра) | D, F, J, K | есть |
+| `ui_accept` (листать диалог) | Enter, Space, E, Numpad Enter | переопределено, чтобы совпадало с `enter` |
 | `ui_cancel` (встроенное) | Esc | выход из мини-игры в хаб после поражения |
 
 Клавиши в Input Map назначать через **physical keycode** — на фестивальных ПК будет русская раскладка.
@@ -104,7 +103,15 @@ game/
 - `add_stamp(mascot)`, `can_open_finale()` (≥ 3 печатей), сигнал `stamp_added`.
 - `secret_dialogues`, `mistakes`, `score_time()` = время + 15 с за ошибку.
 - `go_to_minigame(path, player_pos)` / `return_to_hub()` — переходы; игрок возвращается туда, откуда ушёл.
+- `met`, `mark_met()` / `has_met()` — с кем уже говорили (первые реплики).
+- `has_secret()` / `add_secret_dialogue()` — секретные диалоги.
+- `in_dialogue` — идёт диалог, игрок стоит (по сигналам `DialogueManager`).
+- `MINIGAMES` — какие мини-игры готовы. Из диалога: `do GameState.request_minigame("lenya")`, игра стартует после закрытия диалога.
 - `restart()` — сброс забега и возврат в хаб, вызывается удержанием R.
+
+**Диалоги** (`dialogue/*.dialogue`) обращаются к `GameState` по имени: `if GameState.has_stamp("lenya")`. Порядок веток в `~ start`: знакомство → секретный диалог → после печати / до печати.
+
+**Новый маскот в хабе:** инстанс `scenes/hub/mascot_npc.tscn`, в инспекторе задать `mascot`, `display_name`, `zone_name`, `color`, `dialogue_resource`.
 
 **Контракт мини-игры:** при победе вызвать `GameState.add_stamp("<маскот>")`, показать результат, по `enter` → `GameState.return_to_hub()`. Образец — `ritm/main.gd`.
 
