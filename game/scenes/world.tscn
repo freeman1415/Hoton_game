@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://cxuyggswuob6m"]
+
+[ext_resource type="Script" uid="uid://cam3iytw1qi4q" path="res://scripts/character_body_2d.gd" id="1_k0juu"]
+[ext_resource type="Texture2D" uid="uid://7krphvdi8yo8" path="res://icon.svg" id="2_71j4m"]
+[ext_resource type="PackedScene" uid="uid://jq4emxtvg4v5" path="res://helpers/actionable.tscn" id="3_qfnet"]
+[ext_resource type="Resource" uid="uid://c00juwev7ja4w" path="res://dialogue/main.dialogue" id="4_i7141"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_k0juu"]
+radius = 64.03124
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_k5x2g"]
+radius = 60.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_f3jgm"]
+radius = 62.008064
+
+[sub_resource type="GDScript" id="GDScript_f3jgm"]
+resource_name = "rythm"
+script/source = "extends Area2D
+
+# Указываем путь к сцене напрямую (путь зависит от того, где лежит файл, например, в папке scenes)
+@export_file(\"*.tscn\") var next_scene: String = \"res://ritm/main.tscn\" 
+var is_player_inside = false
+
+func _ready():
+	body_entered.connect(_on_body_entered)
+	body_exited.connect(_on_body_exited)
+
+func _on_body_entered(body):
+	if body.name == \"Player\":
+		is_player_inside = true
+
+func _on_body_exited(body):
+	if body.name == \"Player\":
+		is_player_inside = false
+
+func action():
+	if is_player_inside and Input.is_action_just_pressed(\"enter\"):
+		get_tree().change_scene_to_file(next_scene)
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hqtel"]
+radius = 89.02247
+
+[node name="world" type="Node2D" unique_id=1883516530]
+position = Vector2(88, 11)
+
+[node name="Player" type="CharacterBody2D" parent="." unique_id=314333407]
+position = Vector2(370, 0)
+script = ExtResource("1_k0juu")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1723280633]
+texture = ExtResource("2_71j4m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=686410681]
+shape = SubResource("CircleShape2D_k0juu")
+
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=216193385]
+
+[node name="Direction" type="Marker2D" parent="Player" unique_id=2128137089]
+
+[node name="ActionableFinder" type="Area2D" parent="Player/Direction" unique_id=1951889278]
+position = Vector2(0, 53)
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Direction/ActionableFinder" unique_id=1985615936]
+position = Vector2(64, -53)
+shape = SubResource("CircleShape2D_k5x2g")
+
+[node name="testnpc" type="Sprite2D" parent="." unique_id=233624291]
+position = Vector2(0, 235)
+texture = ExtResource("2_71j4m")
+
+[node name="Actionable" parent="testnpc" unique_id=2005417934 instance=ExtResource("3_qfnet")]
+dialogue_resourse = ExtResource("4_i7141")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="testnpc/Actionable" unique_id=1571169601]
+shape = SubResource("CircleShape2D_f3jgm")
+
+[node name="collisions" type="StaticBody2D" parent="." unique_id=1151166463]
+
+[node name="RYTHM" type="Sprite2D" parent="." unique_id=1841628286]
+position = Vector2(410, -245)
+texture = ExtResource("2_71j4m")
+
+[node name="tothenextscene" type="Area2D" parent="RYTHM" unique_id=1183782627]
+collision_layer = 16
+script = SubResource("GDScript_f3jgm")
+next_scene = "uid://oherdqlo7bow"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RYTHM/tothenextscene" unique_id=538595473]
+shape = SubResource("CircleShape2D_hqtel")

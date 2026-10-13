@@ -1,0 +1,15 @@
+# Godot-проект в game/ имеет свой .gitignore (.godot/)
+
+# Сборки
+build/
+*.pck
+
+# ОС и редакторы
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+
+# Временные файлы Godot
+*.tmp

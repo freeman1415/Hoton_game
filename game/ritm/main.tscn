@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://oherdqlo7bow"]
+
+[ext_resource type="Script" uid="uid://bro8n5qr1vmou" path="res://ritm/main.gd" id="1_0xm2m"]
+[ext_resource type="AudioStream" uid="uid://dt3o8um6ghacc" path="res://ritm/JojoS2_OP.ogg" id="2_h2yge"]
+
+[node name="main" type="Node2D" unique_id=949771113]
+script = ExtResource("1_0xm2m")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1847943463]
+stream = ExtResource("2_h2yge")
+volume_db = -45.334
+autoplay = true
+
+[node name="Lanes" type="Node2D" parent="." unique_id=651592826]
+
+[node name="HpBar" type="ColorRect" parent="." unique_id=1693798756]
+offset_right = 100.0
+offset_bottom = 10.0
+
+[node name="Line" type="ColorRect" parent="." unique_id=180559494]
+offset_top = 600.0
+offset_right = 1200.0
+offset_bottom = 610.0
