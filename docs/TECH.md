@@ -51,6 +51,8 @@ game/
   scenes/hub/mascot_npc.tscn — маскот в хабе (зона, заглушка-кружок, разговор по Enter)
   scenes/minigames/quiz/ — викторина Мойто
   scenes/minigames/cosplay/ — «Собери образ» Кати
+  scenes/minigames/art/ — «Собери эскиз» Мани (картинка рисуется кодом, заглушка)
+  scenes/minigames/logic/ — «Рассади слушателей» Сулуса
   scenes/finale/       — финал: вопросы ГДЕ/КТО/ЗАЧЕМ, концовки, итоги
   scenes/ui/title.tscn — титульный экран, топ-5, Ctrl+Shift+F12 — сброс рекордов
   scenes/ui/notebook.tscn — Детективный блокнот (Tab), ставит игру на паузу

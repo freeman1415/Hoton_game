@@ -45,9 +45,11 @@ const CLUES := {
 
 ## Мини-игры по маскотам. Кого нет в списке — у того мини-игра ещё не готова.
 const MINIGAMES := {
+	"manya": "res://scenes/minigames/art/sketch_puzzle.tscn",
 	"lenya": "res://ritm/main.tscn",
 	"katya": "res://scenes/minigames/cosplay/cosplay.tscn",
 	"moyto": "res://scenes/minigames/quiz/quiz.tscn",
+	"sulus": "res://scenes/minigames/logic/seating.tscn",
 }
 
 var stamps: Array[String] = []

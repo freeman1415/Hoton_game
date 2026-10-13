@@ -10,6 +10,8 @@ const SCENES := [
 	"res://ritm/main.tscn",
 	"res://scenes/minigames/quiz/quiz.tscn",
 	"res://scenes/minigames/cosplay/cosplay.tscn",
+	"res://scenes/minigames/art/sketch_puzzle.tscn",
+	"res://scenes/minigames/logic/seating.tscn",
 	"res://scenes/finale/finale.tscn",
 ]
 const TIME_PER_SCENE := 1.5
