@@ -8,6 +8,7 @@ signal run_reset
 const TITLE_SCENE := "res://scenes/ui/title.tscn"
 const HUB_SCENE := "res://scenes/world.tscn"
 const FINALE_SCENE := "res://scenes/finale/finale.tscn"
+const BACKSTAGE_SCENE := "res://scenes/backstage/backstage.tscn"
 const STAMPS_FOR_FINALE := 3
 const RESTART_HOLD_TIME := 1.0
 const MISTAKE_PENALTY := 15.0
@@ -71,6 +72,12 @@ var in_dialogue := false
 ## Мини-игра, которую попросили запустить из диалога; стартует, когда диалог закроется.
 var pending_minigame := ""
 
+## Концовка, разгаданная на главной сцене: "festival" / "full" / "perfect".
+## Пока не пусто, игрок за кулисами открывает ракету, потом — итоги в финале.
+var finale_ending := ""
+## Разгадан ли ЗАЧЕМ (для подсказки Сулуса про секреты в «Полном расследовании»).
+var finale_why := false
+
 var _restart_held := 0.0
 var _idle_time := 0.0
 var _idle_warning: Label
@@ -110,6 +117,8 @@ func reset_run() -> void:
 	secret_dialogues.clear()
 	in_dialogue = false
 	pending_minigame = ""
+	finale_ending = ""
+	finale_why = false
 	mistakes = 0
 	run_time = 0.0
 	run_active = true
@@ -265,6 +274,18 @@ func request_finale() -> void:
 	pending_minigame = "finale"
 
 
+## Вызывается из диалога ракеты за кулисами, когда Капсула открыта:
+## после диалога — экран итогов финала.
+func request_finale_summary() -> void:
+	pending_minigame = "finale_summary"
+
+
+## Проход за кулисы из хаба: игрок вернётся на то же место.
+func go_to_backstage() -> void:
+	var player := get_tree().current_scene.get_node_or_null("Player") as Node2D
+	go_to_minigame(BACKSTAGE_SCENE, player.global_position if player else Vector2.ZERO)
+
+
 func start_minigame(mascot: String) -> void:
 	var player := get_tree().current_scene.get_node_or_null("Player") as Node2D
 	var player_position: Vector2 = player.global_position if player else Vector2.ZERO
@@ -281,7 +302,10 @@ func _on_dialogue_ended(_resource: DialogueResource) -> void:
 	if pending_minigame != "":
 		var mascot := pending_minigame
 		pending_minigame = ""
-		start_minigame.call_deferred(mascot)
+		if mascot == "finale_summary":
+			get_tree().change_scene_to_file.call_deferred(FINALE_SCENE)
+		else:
+			start_minigame.call_deferred(mascot)
 
 
 func go_to_minigame(scene_path: String, player_position: Vector2) -> void:

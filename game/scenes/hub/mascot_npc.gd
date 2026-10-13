@@ -1,6 +1,7 @@
 extends Area2D
 ## Маскот в хабе: зона, спрайт маскота (art/characters/<mascot>.png) и разговор по Enter.
-## Используется и для главной сцены (mascot = "stage").
+## Используется и для главной сцены (mascot = "stage"), гостей фестиваля
+## (mascot = "guest_N", спрайт art/characters/guest_N.png) и предметов за кулисами.
 ## Игрок находит его через ActionableFinder (слой 5 «Actionables») и вызывает action().
 
 @export var mascot := "manya"
@@ -13,6 +14,8 @@ extends Area2D
 @export var auto_start := false
 ## Подсказка, когда игрок рядом.
 @export var prompt := "Enter — поговорить"
+## Рисовать круг зоны. У гостей и предметов его нет.
+@export var show_zone := true
 
 const BODY_RADIUS := 16.0
 const ZONE_RADIUS := 80.0
@@ -31,15 +34,17 @@ var _zone: Node2D
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	_time = randf() * BOB_PERIOD
 	var path := SPRITE_PATH % mascot
 	if ResourceLoader.exists(path):
 		_sprite = load(path)
+	if not show_zone:
+		return
 	# Круг зоны — на земле, под игроком и декорациями (хаб сортируется по Y)
 	_zone = Node2D.new()
 	_zone.z_index = -1
 	_zone.draw.connect(_draw_zone)
 	add_child(_zone)
-	_time = randf() * BOB_PERIOD
 	if auto_start and not GameState.has_met(mascot):
 		action.call_deferred()
 
@@ -63,8 +68,9 @@ func _draw_zone() -> void:
 func _draw() -> void:
 	var font := ThemeDB.fallback_font
 	# Название зоны — у нижнего края круга: сверху его закрыли бы декорации
-	draw_string(font, Vector2(-ZONE_RADIUS, ZONE_RADIUS - 6), zone_name,
-		HORIZONTAL_ALIGNMENT_CENTER, ZONE_RADIUS * 2, 12)
+	if show_zone:
+		draw_string(font, Vector2(-ZONE_RADIUS, ZONE_RADIUS - 6), zone_name,
+			HORIZONTAL_ALIGNMENT_CENTER, ZONE_RADIUS * 2, 12)
 
 	# Ноги спрайта — на нижнем краю тела, чтобы сортировка по Y была честной
 	var head_y := -BODY_RADIUS

@@ -12,9 +12,10 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 
 from palette import *
-from characters import MASCOTS, player
-from environment import PROPS, ground_tile, art_stall, circus_tent, gate, lecture, \
-    main_stage, music_stage, pine, rocket, runway
+from characters import GUESTS, MASCOTS, guest, player
+from environment import PROPS, ground_tile, art_stall, circus_tent, lecture, \
+    main_stage, music_stage, rocket, runway
+from festival import FESTIVAL_PROPS, backstage_floor, balloons, gate_hoton, planet, tea_stall
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "..", "game", "art")
 
@@ -43,14 +44,14 @@ def manya_sketch():
     put(lecture(), 8, 22)
     put(rocket(), 160, 4)
     put(music_stage(), 84, 24)
-    put(pine(), 210, 36)
+    put(planet(), 198, 50)
     put(art_stall(), 10, 98)
     put(main_stage(), 72, 96)
     put(runway(), 170, 100)
-    put(gate(), 0, 176)
+    put(gate_hoton(), 0, 176)
     put(circus_tent(), 86, 172)
-    put(pine(), 172, 176)
-    put(pine(), 204, 190)
+    put(balloons(), 162, 178)
+    put(tea_stall(), 180, 188)
     # кружок вокруг ракеты
     for r in (27, 28):
         d.ellipse([175 - r, 32 - r, 175 + r, 32 + r], outline=CIRCLE)
@@ -72,9 +73,16 @@ def main():
         save(draw(), "characters", name + ".png")
     for facing in ("down", "up", "side"):
         save(player(facing), "characters", "player_%s.png" % facing)
+    for i in range(len(GUESTS)):
+        save(guest(i), "characters", "guest_%d.png" % i)
     for name, draw in PROPS.items():
+        if name in ("pine", "gate"):  # хаб — фестиваль, не лес; вход теперь gate_hoton
+            continue
+        save(draw(), "props", name + ".png")
+    for name, draw in FESTIVAL_PROPS.items():
         save(draw(), "props", name + ".png")
     save(ground_tile(), "tiles", "ground.png")
+    save(backstage_floor(), "tiles", "backstage_floor.png")
     save(manya_sketch(), "minigames", "manya_sketch.png")
 
 

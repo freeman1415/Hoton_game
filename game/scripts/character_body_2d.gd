@@ -11,6 +11,9 @@ const TEXTURES := {
 const SPRITE_OFFSET := Vector2(0, -6)
 const STEP_TIME := 0.15
 
+## Края локации для камеры (left, top, width, height) — у хаба и закулисья свои.
+@export var camera_limits := Rect2i(-365, -367, 960, 704)
+
 @onready var actionable_finder: Area2D = $Direction/ActionableFinder
 @onready var direction_node: Node2D = $Direction
 @onready var sprite: Sprite2D = $Sprite2D
@@ -22,8 +25,15 @@ func _ready():
 	sprite.scale = Vector2.ONE
 	sprite.texture = TEXTURES.down
 	sprite.offset = SPRITE_OFFSET
-	# Вернулись из мини-игры — встаём туда же, откуда ушли
-	if GameState.hub_return_position != null:
+	var camera: Camera2D = $Camera2D
+	camera.limit_left = camera_limits.position.x
+	camera.limit_top = camera_limits.position.y
+	camera.limit_right = camera_limits.end.x
+	camera.limit_bottom = camera_limits.end.y
+	# Вернулись в хаб из мини-игры или из-за кулис — встаём туда же, откуда ушли.
+	# В других локациях (закулисье) позицию задаёт сама локация.
+	var in_hub: bool = get_parent().scene_file_path == GameState.HUB_SCENE
+	if in_hub and GameState.hub_return_position != null:
 		global_position = GameState.hub_return_position
 		GameState.hub_return_position = null
 

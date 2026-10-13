@@ -5,6 +5,8 @@
 """
 from palette import *
 
+YELLOW_SC = (246, 206, 72, 255)
+
 W = 32
 
 
@@ -252,6 +254,48 @@ def player(facing):
     d.rectangle([7, 17, 16, 19], fill=scarf, outline=OUT)
     if facing != "up":
         d.rectangle([13, 19, 15, 23], fill=scarf, outline=OUT)
+    return outline_pass(im)
+
+
+## Гости фестиваля: (куртка, шапка, волосы, кожа, шарф, кошачьи ушки-косплей)
+GUESTS = [
+    ((90, 120, 200, 255), (230, 80, 90, 255), (60, 40, 30, 255), (240, 200, 164, 255), YELLOW_SC, False),
+    ((230, 120, 60, 255), (60, 60, 70, 255), (30, 24, 22, 255), (214, 164, 120, 255), (90, 160, 220, 255), False),
+    ((120, 170, 90, 255), None, (220, 180, 90, 255), (246, 210, 180, 255), (200, 60, 70, 255), True),
+    ((150, 90, 160, 255), (250, 250, 250, 255), (90, 56, 36, 255), (226, 186, 150, 255), (250, 200, 80, 255), False),
+    ((70, 70, 90, 255), None, (20, 20, 26, 255), (236, 196, 160, 255), (230, 90, 140, 255), True),
+    ((200, 60, 70, 255), (90, 160, 220, 255), (120, 70, 40, 255), (200, 150, 110, 255), WHITE, False),
+]
+
+
+def guest(i):
+    """Гость фестиваля 24×40: зимняя куртка, шапка с помпоном или косплей-ушки."""
+    coat, hat, hair, skin, scarf, ears = GUESTS[i]
+    im, d = canvas(24, 40)
+    for x0 in (8, 13):
+        d.rectangle([x0, 30, x0 + 2, 35], fill=PANTS, outline=OUT)
+        d.ellipse([x0 - 1, 34, x0 + 3, 38], fill=SHOE, outline=OUT)
+    d.polygon([(6, 30), (8, 18), (15, 18), (17, 30)], fill=coat, outline=OUT)
+    d.line([(11, 21), (11, 29)], fill=OUT)
+    d.rectangle([4, 19, 6, 26], fill=coat, outline=OUT)
+    d.rectangle([17, 19, 19, 26], fill=coat, outline=OUT)
+    d.ellipse([4, 25, 7, 28], fill=skin, outline=OUT)
+    d.ellipse([16, 25, 19, 28], fill=skin, outline=OUT)
+    d.ellipse([5, 5, 18, 18], fill=skin, outline=OUT)
+    d.pieslice([5, 5, 18, 18], 180, 360, fill=hair)
+    d.rectangle([8, 11, 9, 13], fill=EYE)
+    d.rectangle([14, 11, 15, 13], fill=EYE)
+    d.point([(7, 14), (16, 14)], fill=BLUSH)
+    d.line([(11, 15), (12, 15)], fill=OUT)
+    if ears:  # косплей: кошачьи ушки
+        d.polygon([(6, 7), (7, 1), (10, 5)], fill=hair, outline=OUT)
+        d.polygon([(17, 7), (16, 1), (13, 5)], fill=hair, outline=OUT)
+        d.point([(8, 4), (15, 4)], fill=PINK)
+    if hat:
+        d.pieslice([4, 3, 19, 14], 180, 360, fill=hat, outline=OUT)
+        d.rectangle([4, 7, 19, 9], fill=hat, outline=OUT)
+        d.ellipse([9, 0, 14, 4], fill=WHITE, outline=OUT)
+    d.rectangle([7, 17, 16, 19], fill=scarf, outline=OUT)
     return outline_pass(im)
 
 

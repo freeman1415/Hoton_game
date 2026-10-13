@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8gqwd0h6nol2"
-path="res://.godot/imported/pine.png-3a839b8bf4a316942b45ef332ad83a93.ctex"
+uid="uid://c746lb4ijod5a"
+path="res://.godot/imported/cable_coil.png-15083b68838920be6ba47205f4a0e5cb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/props/pine.png"
-dest_files=["res://.godot/imported/pine.png-3a839b8bf4a316942b45ef332ad83a93.ctex"]
+source_file="res://art/props/cable_coil.png"
+dest_files=["res://.godot/imported/cable_coil.png-15083b68838920be6ba47205f4a0e5cb.ctex"]
 
 [params]
 

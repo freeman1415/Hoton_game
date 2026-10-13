@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://dnixyp73aw00x"
+path="res://.godot/imported/backstage.dialogue-0e26d541f06218973ac90956435788f2.tres"
+
+[deps]
+
+source_file="res://dialogue/backstage.dialogue"
+dest_files=["res://.godot/imported/backstage.dialogue-0e26d541f06218973ac90956435788f2.tres"]
+
+[params]
+
+defaults=true

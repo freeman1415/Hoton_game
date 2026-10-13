@@ -47,8 +47,11 @@ game/
   project.godot        — главная сцена: scenes/ui/title.tscn
   addons/dialogue_manager/
   dialogue/           — по файлу на маскота: manya, lenya, katya, moyto, sulus
-  scenes/world.tscn    — хаб: 5 зон маскотов, игрок, HUD печатей
-  scenes/hub/mascot_npc.tscn — маскот в хабе (зона, заглушка-кружок, разговор по Enter)
+  scenes/world.tscn    — хаб: 5 зон маскотов, гости, декорации секторов, проход за кулисы, HUD печатей
+  scenes/hub/mascot_npc.tscn — маскот/гость/предмет (спрайт, круг зоны по show_zone, разговор по Enter)
+  scenes/hub/door.tscn — проход между локациями (хаб ↔ закулисье)
+  scenes/player/player.tscn — игрок (общий для хаба и закулисья; camera_limits — края локации)
+  scenes/backstage/    — закулисье: ракета, коробки «ПРИЗЫ»; в финале — маскоты и открытие Капсулы
   scenes/minigames/quiz/ — викторина Мойто
   scenes/minigames/cosplay/ — «Собери образ» Кати
   scenes/minigames/art/ — «Собери эскиз» Мани (картинка — art/minigames/manya_sketch.png)
@@ -135,6 +138,8 @@ game/
 - `in_dialogue` — идёт диалог, игрок стоит (по сигналам `DialogueManager`).
 - `MINIGAMES` — какие мини-игры готовы. Из диалога: `do GameState.request_minigame("lenya")`, игра стартует после закрытия диалога.
 - `request_finale()` — из диалога главной сцены, открывает `FINALE_SCENE`.
+- `finale_ending` / `finale_why` — концовка, разгаданная на главной сцене. Пока `finale_ending` не пуст, за кулисами ждут маскоты и ракета открывается; `request_finale_summary()` (из `backstage.dialogue`) после диалога возвращает в финал, тот сразу показывает итоги.
+- `go_to_backstage()` — проход за кулисы из хаба; назад — `return_to_hub()`, игрок встаёт у занавеса.
 - `finish_run()` — останавливает таймер (концовка); `secrets_required()` — сколько секретов нужно для «Идеального детектива».
 - `go_to_title()` — сброс забега и титульный экран (по бездействию и после итогов финала). На титульном экране таймер забега стоит.
 - Бездействие: `_input()` обнуляет счётчик при любой клавише/кнопке/заметном движении мыши; 50 с — предупреждение, 60 с — `go_to_title()`.
@@ -145,6 +150,8 @@ game/
 **Диалоги** (`dialogue/*.dialogue`) обращаются к `GameState` по имени: `if GameState.has_stamp("lenya")`. Порядок веток в `~ start`: знакомство → секретный диалог → после печати / до печати.
 
 **Новый маскот в хабе:** инстанс `scenes/hub/mascot_npc.tscn`, в инспекторе задать `mascot`, `display_name`, `zone_name`, `color`, `dialogue_resource`.
+
+**Гость или предмет:** тот же `mascot_npc.tscn` с `show_zone = false`, пустыми `display_name`/`zone_name` и своим `dialogue_start` (заголовок в `.dialogue`). Спрайт берётся из `art/characters/<mascot>.png`, если он есть (гости — `guest_0…5`); у предметов спрайта нет, их рисует декорация рядом.
 
 **Контракт мини-игры:** при победе вызвать `GameState.add_stamp("<маскот>")`, показать результат, по `enter` → `GameState.return_to_hub()`. Образец — `ritm/main.gd`.
 
