@@ -47,9 +47,12 @@ game/
   addons/dialogue_manager/
   dialogue/main.dialogue — пока заглушка
   helpers/actionable.tscn — зона «нажми Enter → диалог»
-  scenes/world.tscn    — хаб (игрок, тестовый NPC, вход в ритм-игру)
+  scenes/world.tscn    — хаб (игрок, тестовый NPC, вход в ритм-игру, HUD печатей)
   scenes/test.tscn     — тестовая, удалить
-  scripts/character_body_2d.gd — движение игрока
+  scripts/character_body_2d.gd — движение игрока, возврат на место после мини-игры
+  scripts/game_state.gd — autoload `GameState`: печати, улики, таймер, рестарт по R
+  scripts/minigame_entrance.gd — вход в мини-игру (Area2D + Enter)
+  scripts/hud.gd       — счётчик печатей в хабе
   ritm/                — ритм-игра (Леня): main.tscn, main.gd, note.tscn, note.gd, музыка
 ```
 
@@ -78,19 +81,32 @@ game/
 - узел `RYTHM` → `RhythmEntrance`;
 - `@export var dialogue_resourse` в `helpers/actionable.tscn` → `dialogue_resource` (после переименования переназначить ресурс в инспекторе у всех NPC);
 - `scripts/character_body_2d.gd` → `scripts/player.gd`;
-- функция `Health()` и переменная `Hp` в `ritm/main.gd` → `apply_hp()` / `hp`.
 
 ## Управление (Input Map)
 
 | Действие | Клавиши | Статус |
 |---|---|---|
 | `left` / `right` / `up` / `down` | стрелки, WASD | есть |
-| `enter` (взаимодействие) | Enter | есть; добавить Space, E, Numpad Enter |
-| `notebook` (блокнот) | Tab | **нет**, добавить |
-| `restart` | R (удерживать 1 с) | **нет**, добавить |
-| ритм-игра, дорожки 0–3 | D, F, J, K | захардкожено в `ritm/main.gd`, вынести в Input Map |
+| `enter` (взаимодействие) | Enter, Space, E, Numpad Enter | есть |
+| `notebook` (блокнот) | Tab | действие есть, блокнота ещё нет |
+| `restart` | R (удерживать 1 с) | есть, обрабатывает `GameState` |
+| `lane_0` … `lane_3` (ритм-игра) | D, F, J, K | есть |
+| `ui_cancel` (встроенное) | Esc | выход из мини-игры в хаб после поражения |
 
 Клавиши в Input Map назначать через **physical keycode** — на фестивальных ПК будет русская раскладка.
+
+## GameState (autoload)
+
+`scripts/game_state.gd` хранит состояние текущего забега.
+
+- `stamps` — пройденные зоны (`"manya"`, `"lenya"`, `"katya"`, `"moyto"`, `"sulus"`). Улика выдаётся вместе с печатью, тексты улик лежат в `CLUES`.
+- `clues_answering("where" | "who" | "why")` — сколько собранных улик отвечает на вопрос финала.
+- `add_stamp(mascot)`, `can_open_finale()` (≥ 3 печатей), сигнал `stamp_added`.
+- `secret_dialogues`, `mistakes`, `score_time()` = время + 15 с за ошибку.
+- `go_to_minigame(path, player_pos)` / `return_to_hub()` — переходы; игрок возвращается туда, откуда ушёл.
+- `restart()` — сброс забега и возврат в хаб, вызывается удержанием R.
+
+**Контракт мини-игры:** при победе вызвать `GameState.add_stamp("<маскот>")`, показать результат, по `enter` → `GameState.return_to_hub()`. Образец — `ritm/main.gd`.
 
 ## Сохранения
 

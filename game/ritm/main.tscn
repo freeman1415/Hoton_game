@@ -8,7 +8,7 @@ script = ExtResource("1_0xm2m")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1847943463]
 stream = ExtResource("2_h2yge")
-volume_db = -45.334
+volume_db = -6.0
 autoplay = true
 
 [node name="Lanes" type="Node2D" parent="." unique_id=651592826]

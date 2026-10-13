@@ -5,7 +5,7 @@ var lane = 0             # какая полоска (0,1,2,3)
 var hit_time = 0.0       # когда нота должна быть нажата
 var song = null          # ссылка на музыкальный плеер
 
-func _process(delta):
+func _process(_delta):
 	# Получаем текущую секунду песни
 	var now = song.get_playback_position()
 	# Считаем, сколько осталось до момента нажатия

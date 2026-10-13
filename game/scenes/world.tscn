@@ -4,6 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://7krphvdi8yo8" path="res://icon.svg" id="2_71j4m"]
 [ext_resource type="PackedScene" uid="uid://jq4emxtvg4v5" path="res://helpers/actionable.tscn" id="3_qfnet"]
 [ext_resource type="Resource" uid="uid://c00juwev7ja4w" path="res://dialogue/main.dialogue" id="4_i7141"]
+[ext_resource type="Script" path="res://scripts/minigame_entrance.gd" id="5_entr"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="6_hud"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k0juu"]
 radius = 64.03124
@@ -13,31 +15,6 @@ radius = 60.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_f3jgm"]
 radius = 62.008064
-
-[sub_resource type="GDScript" id="GDScript_f3jgm"]
-resource_name = "rythm"
-script/source = "extends Area2D
-
-# Указываем путь к сцене напрямую (путь зависит от того, где лежит файл, например, в папке scenes)
-@export_file(\"*.tscn\") var next_scene: String = \"res://ritm/main.tscn\" 
-var is_player_inside = false
-
-func _ready():
-	body_entered.connect(_on_body_entered)
-	body_exited.connect(_on_body_exited)
-
-func _on_body_entered(body):
-	if body.name == \"Player\":
-		is_player_inside = true
-
-func _on_body_exited(body):
-	if body.name == \"Player\":
-		is_player_inside = false
-
-func action():
-	if is_player_inside and Input.is_action_just_pressed(\"enter\"):
-		get_tree().change_scene_to_file(next_scene)
-"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hqtel"]
 radius = 89.02247
@@ -86,8 +63,18 @@ texture = ExtResource("2_71j4m")
 
 [node name="tothenextscene" type="Area2D" parent="RYTHM" unique_id=1183782627]
 collision_layer = 16
-script = SubResource("GDScript_f3jgm")
+script = ExtResource("5_entr")
 next_scene = "uid://oherdqlo7bow"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RYTHM/tothenextscene" unique_id=538595473]
 shape = SubResource("CircleShape2D_hqtel")
+
+[node name="Hud" type="CanvasLayer" parent="."]
+script = ExtResource("6_hud")
+
+[node name="StampsLabel" type="Label" parent="Hud"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 416.0
+offset_bottom = 80.0
+theme_override_font_sizes/font_size = 24
