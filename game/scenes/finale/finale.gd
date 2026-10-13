@@ -103,7 +103,7 @@ const ENDINGS := {
 ## Подсказка в «Полном расследовании», если ЗАЧЕМ разгадан, но секретов не хватило.
 const SECRETS_HINT := "Сулус: Впрочем, кое-какие секреты наши друзья вам ещё не рассказали…"
 
-enum Phase { MESSAGE, CHOICE, SUMMARY }
+enum Phase { MESSAGE, CHOICE, NAME_ENTRY, SUMMARY }
 
 var phase := Phase.MESSAGE
 var on_continue: Callable
@@ -115,6 +115,9 @@ var ending_id := ""
 var current_question := ""
 var evidence_clues: Array = []   # улики, предложенные как доказательство
 var speaker := ""                # говорящий маскот подпрыгивает в ряду сверху
+var summary_text := ""
+var name_letters := [4, 5, 18]   # индексы в Leaderboard.LETTERS: «ДЕТ»
+var name_cursor := 0
 
 var text_label: Label
 var option_labels: Array[Label] = []
@@ -154,9 +157,11 @@ func _unhandled_input(event: InputEvent) -> void:
 				var digit: int = event.physical_keycode - KEY_1
 				if digit >= 0 and digit < choice_count:
 					pick(digit)
+		Phase.NAME_ENTRY:
+			handle_name_input(event)
 		Phase.SUMMARY:
 			if event.is_action_pressed("enter"):
-				GameState.restart()
+				GameState.go_to_title()
 
 
 #region Вопросы
@@ -223,15 +228,69 @@ func show_ending() -> void:
 
 
 func show_summary() -> void:
-	phase = Phase.SUMMARY
 	hide_options()
-	var total := int(GameState.score_time())
-	text_label.text = "Концовка: «%s»\n\nВремя: %d:%02d    Ошибок: %d (+%d с за каждую)\nПечатей: %d / %d    Секретных разговоров: %d / %d" % [
-		ENDINGS[ending_id].title, floori(total / 60.0), total % 60,
+	highlight_speaker("")
+	summary_text = "Концовка: «%s»\nВремя: %s    Ошибок: %d (+%d с за каждую)\nПечатей: %d / %d    Секретных разговоров: %d / %d" % [
+		ENDINGS[ending_id].title, Leaderboard.format_time(GameState.score_time()),
 		GameState.mistakes, int(GameState.MISTAKE_PENALTY),
 		GameState.stamp_count(), GameState.MASCOTS.size(),
 		GameState.secret_dialogues.size(), GameState.secrets_required()]
-	hint_label.text = "Enter — новая игра"
+	if Leaderboard.qualifies(GameState.stamp_count(), GameState.score_time()):
+		phase = Phase.NAME_ENTRY
+		update_name_entry("")
+	else:
+		show_records(-1)
+
+
+func show_records(highlight: int) -> void:
+	phase = Phase.SUMMARY
+	text_label.text = summary_text + "\n\nЛучшие детективы\n" + "\n".join(Leaderboard.format_lines(highlight))
+	hint_label.text = "Enter — на титульный экран"
+
+#endregion
+
+#region Имя для лидерборда
+
+func handle_name_input(event: InputEvent) -> void:
+	var count := Leaderboard.LETTERS.length()
+	if event.is_action_pressed("up"):
+		name_letters[name_cursor] = (name_letters[name_cursor] + 1) % count
+	elif event.is_action_pressed("down"):
+		name_letters[name_cursor] = (name_letters[name_cursor] + count - 1) % count
+	elif event.is_action_pressed("left"):
+		name_cursor = (name_cursor + Leaderboard.NAME_LENGTH - 1) % Leaderboard.NAME_LENGTH
+	elif event.is_action_pressed("right"):
+		name_cursor = (name_cursor + 1) % Leaderboard.NAME_LENGTH
+	elif event.is_action_pressed("enter"):
+		var player_name := current_name()
+		if not Leaderboard.is_name_allowed(player_name):
+			update_name_entry("Такое имя нельзя. Выбери другое!")
+			return
+		var place := Leaderboard.add(player_name, GameState.stamp_count(),
+			GameState.score_time(), ENDINGS[ending_id].title)
+		show_records(place)
+		return
+	else:
+		return
+	update_name_entry("")
+
+
+func current_name() -> String:
+	var result := ""
+	for i in name_letters:
+		result += Leaderboard.LETTERS[i]
+	return result
+
+
+func update_name_entry(warning: String) -> void:
+	var shown := ""
+	for i in Leaderboard.NAME_LENGTH:
+		var letter: String = Leaderboard.LETTERS[name_letters[i]]
+		shown += ("[%s]" % letter if i == name_cursor else " %s " % letter) + " "
+	text_label.text = summary_text + "\n\nНовый рекорд! Впиши имя в Книгу детективов:\n\n" + shown
+	if warning != "":
+		text_label.text += "\n\n" + warning
+	hint_label.text = "↑↓ — буква    ←→ — позиция    Enter — готово"
 
 #endregion
 

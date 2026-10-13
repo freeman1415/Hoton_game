@@ -5,11 +5,15 @@ extends Node
 signal stamp_added(mascot: String)
 signal run_reset
 
+const TITLE_SCENE := "res://scenes/ui/title.tscn"
 const HUB_SCENE := "res://scenes/world.tscn"
 const FINALE_SCENE := "res://scenes/finale/finale.tscn"
 const STAMPS_FOR_FINALE := 3
 const RESTART_HOLD_TIME := 1.0
 const MISTAKE_PENALTY := 15.0
+## Посетитель ушёл: столько секунд без ввода — и обратно на титульный экран.
+const IDLE_RESET_TIME := 60.0
+const IDLE_WARNING_TIME := 50.0
 
 ## Маскоты в порядке отображения в блокноте.
 const MASCOTS := ["manya", "lenya", "katya", "moyto", "sulus"]
@@ -66,18 +70,25 @@ var in_dialogue := false
 var pending_minigame := ""
 
 var _restart_held := 0.0
+var _idle_time := 0.0
+var _idle_warning: Label
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	DialogueManager.dialogue_started.connect(_on_dialogue_started)
 	DialogueManager.dialogue_ended.connect(_on_dialogue_ended)
+	_create_idle_warning()
 	reset_run()
+	# Пока не нажали «Начать» на титульном экране, таймер не идёт
+	run_active = false
 
 
 func _process(delta: float) -> void:
 	if run_active:
 		run_time += delta
+
+	_update_idle(delta)
 
 	if Input.is_action_pressed("restart"):
 		_restart_held += delta
@@ -98,8 +109,58 @@ func reset_run() -> void:
 	mistakes = 0
 	run_time = 0.0
 	run_active = true
+	_idle_time = 0.0
 	hub_return_position = null
 	run_reset.emit()
+
+
+func _input(event: InputEvent) -> void:
+	# Любое нажатие или движение мыши — посетитель на месте
+	if event is InputEventKey or event is InputEventMouseButton or event is InputEventJoypadButton 			or (event is InputEventMouseMotion and event.relative.length() > 2.0):
+		_idle_time = 0.0
+
+
+func _update_idle(delta: float) -> void:
+	var on_title := get_tree().current_scene != null 			and get_tree().current_scene.scene_file_path == TITLE_SCENE
+	if on_title:
+		_idle_time = 0.0
+	else:
+		_idle_time += delta
+	_idle_warning.visible = _idle_time >= IDLE_WARNING_TIME
+	if _idle_warning.visible:
+		_idle_warning.text = "Ты ещё здесь? Нажми любую клавишу.
+Через %d с игра начнётся заново." % ceili(IDLE_RESET_TIME - _idle_time)
+	if _idle_time >= IDLE_RESET_TIME:
+		go_to_title()
+
+
+func _create_idle_warning() -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 200
+	add_child(layer)
+	_idle_warning = Label.new()
+	_idle_warning.set_anchors_preset(Control.PRESET_CENTER)
+	_idle_warning.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_idle_warning.grow_vertical = Control.GROW_DIRECTION_BOTH
+	_idle_warning.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_idle_warning.add_theme_font_size_override("font_size", 14)
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0, 0, 0)
+	style.border_color = Color(1, 1, 1)
+	style.set_border_width_all(2)
+	style.set_content_margin_all(10)
+	_idle_warning.add_theme_stylebox_override("normal", style)
+	_idle_warning.hide()
+	layer.add_child(_idle_warning)
+
+
+## На титульный экран: забег сбрасывается, таймер стоит до «Начать».
+func go_to_title() -> void:
+	reset_run()
+	run_active = false
+	_idle_time = 0.0
+	get_tree().paused = false
+	get_tree().change_scene_to_file(TITLE_SCENE)
 
 
 ## Полный рестарт забега с возвратом в хаб.

@@ -43,7 +43,7 @@ godot --headless --path game --quit-after 180 res://ritm/main.tscn   # прог�
 
 ```
 game/
-  project.godot        — главная сцена: scenes/world.tscn
+  project.godot        — главная сцена: scenes/ui/title.tscn
   addons/dialogue_manager/
   dialogue/           — по файлу на маскота: manya, lenya, katya, moyto, sulus
   scenes/world.tscn    — хаб: 5 зон маскотов, игрок, HUD печатей
@@ -51,11 +51,14 @@ game/
   scenes/minigames/quiz/ — викторина Мойто
   scenes/minigames/cosplay/ — «Собери образ» Кати
   scenes/finale/       — финал: вопросы ГДЕ/КТО/ЗАЧЕМ, концовки, итоги
+  scenes/ui/title.tscn — титульный экран, топ-5, Ctrl+Shift+F12 — сброс рекордов
   scenes/ui/notebook.tscn — Детективный блокнот (Tab), ставит игру на паузу
   scenes/ui/dialogue_balloon.tscn/.gd — окно диалога (копия примера DM под 640×360, без баннера)
   scenes/test.tscn     — тестовая, удалить
   scripts/character_body_2d.gd — движение игрока, возврат на место после мини-игры
   scripts/game_state.gd — autoload `GameState`: печати, улики, таймер, рестарт по R
+  scripts/leaderboard.gd — autoload `Leaderboard`: топ-5 в user://leaderboard.cfg
+  art/ui/logo_hoton.png — логотип для титульного экрана
   scripts/hud.gd       — счётчик печатей в хабе
   ritm/                — ритм-игра (Леня): main.tscn, main.gd, note.tscn, note.gd, музыка
 ```
@@ -122,6 +125,8 @@ game/
 - `MINIGAMES` — какие мини-игры готовы. Из диалога: `do GameState.request_minigame("lenya")`, игра стартует после закрытия диалога.
 - `request_finale()` — из диалога главной сцены, открывает `FINALE_SCENE`.
 - `finish_run()` — останавливает таймер (концовка); `secrets_required()` — сколько секретов нужно для «Идеального детектива».
+- `go_to_title()` — сброс забега и титульный экран (по бездействию и после итогов финала). На титульном экране таймер забега стоит.
+- Бездействие: `_input()` обнуляет счётчик при любой клавише/кнопке/заметном движении мыши; 50 с — предупреждение, 60 с — `go_to_title()`.
 - `restart()` — сброс забега и возврат в хаб, вызывается удержанием R.
 
 **Окно диалога** задаётся в `project.godot` → `dialogue_manager/runtime/balloon_path`. Показывать через `DialogueManager.show_dialogue_balloon()`, а не `show_example_dialogue_balloon()`.
@@ -131,6 +136,10 @@ game/
 **Новый маскот в хабе:** инстанс `scenes/hub/mascot_npc.tscn`, в инспекторе задать `mascot`, `display_name`, `zone_name`, `color`, `dialogue_resource`.
 
 **Контракт мини-игры:** при победе вызвать `GameState.add_stamp("<маскот>")`, показать результат, по `enter` → `GameState.return_to_hub()`. Образец — `ritm/main.gd`.
+
+## Leaderboard (autoload)
+
+`scripts/leaderboard.gd`: `entries` (топ-5, `{name, stamps, time, ending}`), `qualifies()`, `add()` → место или -1, `clear()`, `is_name_allowed()`, `format_lines()`. Сортировка: печати по убыванию, затем время (с штрафами) по возрастанию.
 
 ## Сохранения
 
