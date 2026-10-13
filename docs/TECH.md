@@ -5,7 +5,8 @@
 - **Godot 4.7**, GDScript. Открывать проект только этой версией — более старая не откроет, более новая может молча переконвертировать сцены.
 - Плагин: Dialogue Manager 4.1.0 (Nathan Hoad, MIT) — autoload `DialogueManager`, файлы диалогов `*.dialogue`.
 - ПК (Windows, Linux), экспорт `.exe` / `.x86_64`.
-- Рендер сейчас: Forward+ / D3D12 (`project.godot` → `[rendering]`). Решение по смене — см. «Открытые вопросы».
+- Рендер: **Compatibility** (OpenGL 3.3) — запустится и на слабом фестивальном ПК со встроенной графикой (решено 2026-10-14). 3D-физика (Jolt) выключена — игра 2D.
+- Имя проекта: «Хотон: Дело о пропавшей Капсуле» (заголовок окна).
 
 ## Первый запуск
 
@@ -144,18 +145,33 @@ game/
 ## Сохранения
 
 - Лидерборд и достижения — `user://` (`ConfigFile`), бэкенда нет.
-- Windows: `%APPDATA%\Godot\app_userdata\game-peakit\`.
+- Папка `user://` задана латиницей (`config/custom_user_dir_name="hoton_game"`), чтобы в пути не было кириллицы из имени проекта.
+- Windows: `%APPDATA%\hoton_game\` (лидерборд — `leaderboard.cfg`).
+- Linux: `~/.local/share/hoton_game/`.
 
 ## Экспорт
 
-1. Editor → Manage Export Templates → скачать шаблоны 4.7.
-2. Project → Export → пресеты Windows Desktop и Linux.
-3. Выход — в `build/` (в git не попадает).
-4. **Проверять экспортированную сборку, а не только запуск из редактора** (регистр путей, отсутствующие ресурсы).
+Пресеты — `game/export_presets.cfg` (в git): **Windows Desktop** и **Linux**, x86_64, `.pck` встроен в исполняемый файл, рядом — консольная обёртка для логов.
+
+1. Шаблоны экспорта 4.7.2: Editor → Manage Export Templates → Download (1,3 ГБ). Ставятся в `%APPDATA%\Godot\export_templates\4.7.2.stable\`.
+2. Сборка из командной строки (из папки `game/`):
+
+```bash
+godot --headless --path . --export-release "Windows Desktop" ../build/windows/HotonGame.exe
+godot --headless --path . --export-release "Linux" ../build/linux/HotonGame.x86_64
+```
+
+3. Выход — в `build/` (в git не попадает): `HotonGame.exe` (для показа) и `HotonGame.console.exe` (то же, но с выводом в консоль). Для Linux — `HotonGame.x86_64` и `HotonGame.sh`.
+4. **Проверять собранную игру, а не запуск из редактора** — дымовым тестом:
+
+```bash
+HotonGame.console.exe -- --smoke-test
+```
+
+Он по очереди открывает все сцены и печатает `SMOKE ok <сцена>` или `SMOKE FAIL <сцена>`, в конце `SMOKE TEST DONE`. Любой `SCRIPT ERROR` / `ERROR` до этой строки — проблема (утечки при выходе — нет). **Прогнать на фестивальном ПК** до открытия. Новую сцену — добавлять в `scripts/smoke_test.gd`.
+
+Из экспорта исключены C#-файлы Dialogue Manager (`*.cs` и три C#-сцены примеров): Godot без .NET не может их загрузить.
 
 ## Открытые вопросы
 
-
-- Название проекта в `project.godot` — `game-peakit`. Переименовать в `Hoton Game`? (Меняет путь `user://`.)
-- Рендерер: Forward+ / D3D12 может не запуститься на слабом фестивальном ПК без нормальной видеокарты. Для 2D-игры безопаснее **Compatibility**. Решить до первого экспорта.
-- `[physics] 3d/physics_engine="Jolt Physics"` для 2D-игры не нужен — можно убрать.
+- Иконка `.exe` — сейчас стандартная Godot. Своя иконка требует `rcedit` (Editor Settings → Export → Windows) и `application/modify_resources=true` в пресете.

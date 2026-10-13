@@ -79,6 +79,8 @@ func _ready() -> void:
 	DialogueManager.dialogue_started.connect(_on_dialogue_started)
 	DialogueManager.dialogue_ended.connect(_on_dialogue_ended)
 	_create_idle_warning()
+	if "--smoke-test" in OS.get_cmdline_user_args():
+		add_child(preload("res://scripts/smoke_test.gd").new())
 	reset_run()
 	# Пока не нажали «Начать» на титульном экране, таймер не идёт
 	run_active = false
