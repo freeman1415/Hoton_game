@@ -30,6 +30,7 @@ const CLUES := {
 ## Мини-игры по маскотам. Кого нет в списке — у того мини-игра ещё не готова.
 const MINIGAMES := {
 	"lenya": "res://ritm/main.tscn",
+	"katya": "res://scenes/minigames/cosplay/cosplay.tscn",
 	"moyto": "res://scenes/minigames/quiz/quiz.tscn",
 }
 
