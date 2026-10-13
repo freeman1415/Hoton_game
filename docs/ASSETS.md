@@ -26,6 +26,7 @@
 | Что | Версия | Автор | Лицензия | Статус |
 |---|---|---|---|---|
 | Dialogue Manager | 4.1.0 | Nathan Hoad | MIT (`game/addons/dialogue_manager/LICENSE`) | ✅ — указать в титрах |
+| `game/scenes/ui/dialogue_balloon.*` | — | на основе примера Dialogue Manager | MIT (как у плагина) | ✅ |
 
 ## Аудио
 

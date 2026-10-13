@@ -20,9 +20,18 @@ config/icon="res://icon.svg"
 DialogueManager="*uid://c3rodes2l3gxb"
 GameState="*res://scripts/game_state.gd"
 
+[dialogue_manager]
+
+runtime/balloon_path="res://scenes/ui/dialogue_balloon.tscn"
+
 [display]
 
+window/size/viewport_width=640
+window/size/viewport_height=360
+window/size/window_width_override=1280
+window/size/window_height_override=720
 window/stretch/mode="canvas_items"
+window/stretch/scale_mode="integer"
 window/stretch/aspect="expand"
 
 [editor_plugins]

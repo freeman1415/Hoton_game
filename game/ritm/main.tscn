@@ -14,10 +14,12 @@ autoplay = true
 [node name="Lanes" type="Node2D" parent="." unique_id=651592826]
 
 [node name="HpBar" type="ColorRect" parent="." unique_id=1693798756]
-offset_right = 100.0
-offset_bottom = 10.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 108.0
+offset_bottom = 14.0
 
 [node name="Line" type="ColorRect" parent="." unique_id=180559494]
-offset_top = 600.0
-offset_right = 1200.0
-offset_bottom = 610.0
+offset_top = 300.0
+offset_right = 640.0
+offset_bottom = 305.0

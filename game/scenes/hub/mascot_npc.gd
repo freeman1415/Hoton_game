@@ -11,8 +11,8 @@ extends Area2D
 ## Начать разговор сразу при входе в хаб, если ещё не знакомы (Маня у входа).
 @export var auto_start := false
 
-const BODY_RADIUS := 40.0
-const ZONE_RADIUS := 170.0
+const BODY_RADIUS := 16.0
+const ZONE_RADIUS := 80.0
 const STAMP_COLOR := Color(0.95, 0.75, 0.2)
 
 var _player_near := false
@@ -26,7 +26,7 @@ func _ready() -> void:
 
 
 func action() -> void:
-	DialogueManager.show_example_dialogue_balloon(dialogue_resource, dialogue_start)
+	DialogueManager.show_dialogue_balloon(dialogue_resource, dialogue_start)
 
 
 func _process(_delta: float) -> void:
@@ -39,19 +39,19 @@ func _draw() -> void:
 	var zone_color := color
 	zone_color.a = 0.15
 	draw_circle(Vector2.ZERO, ZONE_RADIUS, zone_color)
-	draw_string(font, Vector2(-ZONE_RADIUS, -ZONE_RADIUS + 28), zone_name,
-		HORIZONTAL_ALIGNMENT_CENTER, ZONE_RADIUS * 2, 26)
+	draw_string(font, Vector2(-ZONE_RADIUS, -ZONE_RADIUS + 14), zone_name,
+		HORIZONTAL_ALIGNMENT_CENTER, ZONE_RADIUS * 2, 12)
 
 	draw_circle(Vector2.ZERO, BODY_RADIUS, color)
-	draw_string(font, Vector2(-100, BODY_RADIUS + 30), display_name,
-		HORIZONTAL_ALIGNMENT_CENTER, 200, 24)
+	draw_string(font, Vector2(-60, BODY_RADIUS + 14), display_name,
+		HORIZONTAL_ALIGNMENT_CENTER, 120, 11)
 
 	if GameState.has_stamp(mascot):
-		draw_circle(Vector2(BODY_RADIUS, -BODY_RADIUS), 14, STAMP_COLOR)
+		draw_circle(Vector2(BODY_RADIUS, -BODY_RADIUS), 6, STAMP_COLOR)
 
 	if _player_near and not GameState.in_dialogue:
-		draw_string(font, Vector2(-100, -BODY_RADIUS - 12), "Enter — поговорить",
-			HORIZONTAL_ALIGNMENT_CENTER, 200, 20)
+		draw_string(font, Vector2(-60, -BODY_RADIUS - 6), "Enter — поговорить",
+			HORIZONTAL_ALIGNMENT_CENTER, 120, 10)
 
 
 func _on_body_entered(body: Node2D) -> void:

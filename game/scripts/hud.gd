@@ -17,4 +17,4 @@ func update_text() -> void:
 	var text := "Печати: %d / %d" % [GameState.stamp_count(), GameState.MASCOTS.size()]
 	if GameState.can_open_finale():
 		text += "\nМожно идти к главной сцене!"
-	stamps_label.text = text
+	stamps_label.text = text + "\nTab — блокнот"

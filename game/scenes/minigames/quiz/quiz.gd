@@ -168,23 +168,23 @@ func build_ui() -> void:
 	var box := VBoxContainer.new()
 	box.set_anchors_preset(Control.PRESET_FULL_RECT)
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 24)
+	box.add_theme_constant_override("separation", 10)
 	add_child(box)
 
-	title_label = make_label(box, 36)
-	question_label = make_label(box, 32)
+	title_label = make_label(box, 16)
+	question_label = make_label(box, 14)
 	for i in 3:
-		var label := make_label(box, 30)
+		var label := make_label(box, 13)
 		option_labels.append(label)
 
 	timer_bar = ProgressBar.new()
 	timer_bar.max_value = TIME_PER_QUESTION
 	timer_bar.show_percentage = false
-	timer_bar.custom_minimum_size = Vector2(400, 16)
+	timer_bar.custom_minimum_size = Vector2(200, 6)
 	timer_bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	box.add_child(timer_bar)
 
-	info_label = make_label(box, 24)
+	info_label = make_label(box, 11)
 
 
 func make_label(parent: Node, font_size: int) -> Label:

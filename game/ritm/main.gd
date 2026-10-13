@@ -14,7 +14,7 @@ var note_scene = preload("res://ritm/note.tscn")
 const MASCOT = "lenya"
 const MAX_HP = 10
 const HIT_WINDOW = 0.15
-const MISS_Y = 700
+const MISS_Y = 350
 const LANE_ACTIONS = ["lane_0", "lane_1", "lane_2", "lane_3"]
 
 var hp = MAX_HP
@@ -37,6 +37,7 @@ func _ready():
 		note.song = $AudioStreamPlayer     # <-- вот тут передаём музыку
 		$Lanes.add_child(note)
 	notes_left = chart.size()
+	create_lane_hints()
 	create_result_label()
 
 func _process(_delta):
@@ -97,7 +98,7 @@ func apply_hp(amount):
 		finish(true)
 
 func update_hp_bar():
-	$HpBar.size.x = 120 * hp
+	$HpBar.size.x = 20 * hp
 
 func finish(is_win):
 	if finished:
@@ -128,6 +129,18 @@ func handle_result_input(event):
 	elif event.is_action_pressed("ui_cancel") and not won:
 		GameState.return_to_hub()
 
+# Подписи клавиш под дорожками: обучения нет, игрок должен понять сразу
+func create_lane_hints():
+	var keys = ["D", "F", "J", "K"]
+	for lane in keys.size():
+		var label = Label.new()
+		label.text = keys[lane]
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.position = Vector2(220 + lane * 50, 310)
+		label.size = Vector2(30, 20)
+		label.add_theme_font_size_override("font_size", 14)
+		add_child(label)
+
 func create_result_label():
 	var layer = CanvasLayer.new()
 	add_child(layer)
@@ -135,6 +148,6 @@ func create_result_label():
 	result_label.set_anchors_preset(Control.PRESET_FULL_RECT)
 	result_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	result_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	result_label.add_theme_font_size_override("font_size", 32)
+	result_label.add_theme_font_size_override("font_size", 16)
 	result_label.hide()
 	layer.add_child(result_label)

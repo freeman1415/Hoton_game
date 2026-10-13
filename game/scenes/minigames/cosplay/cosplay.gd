@@ -204,27 +204,27 @@ func build_ui() -> void:
 	var box := VBoxContainer.new()
 	box.set_anchors_preset(Control.PRESET_FULL_RECT)
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 16)
+	box.add_theme_constant_override("separation", 8)
 	add_child(box)
 
-	katya_label = make_label(box, 30)
+	katya_label = make_label(box, 13)
 
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 48)
+	row.add_theme_constant_override("separation", 20)
 	box.add_child(row)
 
 	mannequin = Control.new()
-	mannequin.custom_minimum_size = Vector2(240, 280)
+	mannequin.custom_minimum_size = Vector2(100, 120)
 	mannequin.draw.connect(draw_mannequin)
 	row.add_child(mannequin)
 
 	var slots_box := VBoxContainer.new()
 	slots_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	slots_box.add_theme_constant_override("separation", 20)
+	slots_box.add_theme_constant_override("separation", 10)
 	row.add_child(slots_box)
 	for i in SLOTS.size():
-		var label := make_label(slots_box, 28)
+		var label := make_label(slots_box, 12)
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		slot_labels.append(label)
 
@@ -232,18 +232,18 @@ func build_ui() -> void:
 	timer_bar.max_value = TIME_LIMIT
 	timer_bar.value = TIME_LIMIT
 	timer_bar.show_percentage = false
-	timer_bar.custom_minimum_size = Vector2(400, 16)
+	timer_bar.custom_minimum_size = Vector2(200, 6)
 	timer_bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	box.add_child(timer_bar)
 
-	info_label = make_label(box, 20)
+	info_label = make_label(box, 10)
 
 
 func make_label(parent: Node, font_size: int) -> Label:
 	var label := Label.new()
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.custom_minimum_size.x = 400
+	label.custom_minimum_size.x = 200
 	label.add_theme_font_size_override("font_size", font_size)
 	parent.add_child(label)
 	return label

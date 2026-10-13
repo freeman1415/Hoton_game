@@ -13,6 +13,17 @@ const MISTAKE_PENALTY := 15.0
 ## Маскоты в порядке отображения в блокноте.
 const MASCOTS := ["manya", "lenya", "katya", "moyto", "sulus"]
 
+const MASCOT_INFO := {
+	"manya": {"name": "Маня", "zone": "Арт-маркет"},
+	"lenya": {"name": "Леня", "zone": "Музыкальная сцена"},
+	"katya": {"name": "Катя", "zone": "Косплей-дефиле"},
+	"moyto": {"name": "Мойто", "zone": "Конкурсы"},
+	"sulus": {"name": "Сулус", "zone": "Лекторий"},
+}
+
+## Сколько всего секретных диалогов (см. docs/GAME.md).
+const SECRET_DIALOGUES_TOTAL := 5
+
 ## Улики: на какой вопрос финала отвечают (where / who / why). См. docs/GAME.md.
 const CLUES := {
 	"manya": {"title": "Эскиз «схема праздника»", "answers": ["where"],

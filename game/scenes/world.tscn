@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://7krphvdi8yo8" path="res://icon.svg" id="2_71j4m"]
 [ext_resource type="Script" path="res://scripts/hud.gd" id="6_hud"]
 [ext_resource type="PackedScene" path="res://scenes/hub/mascot_npc.tscn" id="7_npc"]
+[ext_resource type="PackedScene" path="res://scenes/ui/notebook.tscn" id="13_notebook"]
 [ext_resource type="Resource" path="res://dialogue/manya.dialogue" id="8_manya"]
 [ext_resource type="Resource" path="res://dialogue/lenya.dialogue" id="9_lenya"]
 [ext_resource type="Resource" path="res://dialogue/katya.dialogue" id="10_katya"]
@@ -11,10 +12,10 @@
 [ext_resource type="Resource" path="res://dialogue/sulus.dialogue" id="12_sulus"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k0juu"]
-radius = 64.03124
+radius = 14.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k5x2g"]
-radius = 60.0
+radius = 20.0
 
 [node name="world" type="Node2D" unique_id=1883516530]
 
@@ -28,7 +29,7 @@ dialogue_resource = ExtResource("8_manya")
 auto_start = true
 
 [node name="Lenya" parent="." instance=ExtResource("7_npc")]
-position = Vector2(450, -450)
+position = Vector2(200, -200)
 mascot = "lenya"
 display_name = "Леня"
 zone_name = "Музыкальная сцена"
@@ -36,7 +37,7 @@ color = Color(0.55, 0.7, 0.95, 1)
 dialogue_resource = ExtResource("9_lenya")
 
 [node name="Katya" parent="." instance=ExtResource("7_npc")]
-position = Vector2(950, 0)
+position = Vector2(420, 0)
 mascot = "katya"
 display_name = "Катя"
 zone_name = "Косплей-дефиле"
@@ -44,7 +45,7 @@ color = Color(0.75, 0.55, 0.95, 1)
 dialogue_resource = ExtResource("10_katya")
 
 [node name="Moyto" parent="." instance=ExtResource("7_npc")]
-position = Vector2(450, 450)
+position = Vector2(200, 200)
 mascot = "moyto"
 display_name = "Мойто"
 zone_name = "Конкурсы"
@@ -52,7 +53,7 @@ color = Color(0.95, 0.65, 0.3, 1)
 dialogue_resource = ExtResource("11_moyto")
 
 [node name="Sulus" parent="." instance=ExtResource("7_npc")]
-position = Vector2(-450, -450)
+position = Vector2(-200, -200)
 mascot = "sulus"
 display_name = "Сулус"
 zone_name = "Лекторий"
@@ -60,11 +61,11 @@ color = Color(0.6, 0.8, 0.5, 1)
 dialogue_resource = ExtResource("12_sulus")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=314333407]
-position = Vector2(180, 0)
+position = Vector2(80, 0)
 script = ExtResource("1_k0juu")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1723280633]
-scale = Vector2(0.6, 0.6)
+scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_71j4m")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=686410681]
@@ -75,12 +76,12 @@ shape = SubResource("CircleShape2D_k0juu")
 [node name="Direction" type="Marker2D" parent="Player" unique_id=2128137089]
 
 [node name="ActionableFinder" type="Area2D" parent="Player/Direction" unique_id=1951889278]
-position = Vector2(0, 53)
+position = Vector2(0, 0)
 collision_layer = 0
 collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Direction/ActionableFinder" unique_id=1985615936]
-position = Vector2(64, -53)
+position = Vector2(20, 0)
 shape = SubResource("CircleShape2D_k5x2g")
 
 [node name="collisions" type="StaticBody2D" parent="." unique_id=1151166463]
@@ -89,8 +90,10 @@ shape = SubResource("CircleShape2D_k5x2g")
 script = ExtResource("6_hud")
 
 [node name="StampsLabel" type="Label" parent="Hud"]
-offset_left = 16.0
-offset_top = 16.0
-offset_right = 416.0
-offset_bottom = 80.0
-theme_override_font_sizes/font_size = 24
+offset_left = 8.0
+offset_top = 6.0
+offset_right = 300.0
+offset_bottom = 60.0
+theme_override_font_sizes/font_size = 12
+
+[node name="Notebook" parent="." instance=ExtResource("13_notebook")]
