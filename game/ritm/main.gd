@@ -24,25 +24,36 @@ var finished = false     # игра закончилась — ждём выбо
 var won = false
 
 var result_label: Label
+## Своё время песни: трека пока нет (опенинг JoJo убран из репозитория,
+## см. docs/ASSETS.md), а ноты должны падать и без музыки.
+var clock = 0.0
 
 func _ready():
-	# Запускаем музыку
-	$AudioStreamPlayer.play()
+	# Запускаем музыку, если трек назначен в $AudioStreamPlayer
+	if $AudioStreamPlayer.stream:
+		$AudioStreamPlayer.play()
 	# Спавним все ноты из карты
 	update_hp_bar()
 	for n in chart:
 		var note = note_scene.instantiate()
 		note.hit_time = n.time
 		note.lane = n.lane
-		note.song = $AudioStreamPlayer     # <-- вот тут передаём музыку
+		note.song = self     # нота спрашивает время песни через song_position()
 		$Lanes.add_child(note)
 	notes_left = chart.size()
 	create_lane_hints()
 	create_result_label()
 
-func _process(_delta):
+## Текущая секунда песни: по треку, если он играет, иначе по своему таймеру.
+func song_position():
+	if $AudioStreamPlayer.playing:
+		return $AudioStreamPlayer.get_playback_position()
+	return clock
+
+func _process(delta):
 	if finished:
 		return
+	clock += delta
 	for note in $Lanes.get_children():
 		if note.position.y > MISS_Y and not note.is_queued_for_deletion():
 			note.queue_free()
@@ -64,7 +75,7 @@ func _unhandled_input(event):
 			return
 
 func check_hit(lane):
-	var now = $AudioStreamPlayer.get_playback_position()
+	var now = song_position()
 	var best_note = null
 	var best_diff = 999.0
 
