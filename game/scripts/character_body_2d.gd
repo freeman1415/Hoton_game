@@ -72,10 +72,12 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	animate_step(delta)
 
-func _unhandled_input(_event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if GameState.in_dialogue:
 		return
-	if Input.is_action_just_pressed("enter"):
+	# Только само нажатие Enter: Input.is_action_just_pressed() срабатывал на любое
+	# событие в том же кадре (движение мыши, отпускание) и открывал второй диалог (BUG-009)
+	if event.is_action_pressed("enter") and not event.is_echo():
 		var actionables = actionable_finder.get_overlapping_areas()
 		if actionables.size() > 0:
 			actionables[0].action()

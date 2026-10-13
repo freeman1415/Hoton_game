@@ -50,6 +50,11 @@ func _ready() -> void:
 
 
 func action() -> void:
+	if GameState.in_dialogue:
+		return
+	# Окно Dialogue Manager открывается отложенно (call_deferred), а сигнал
+	# dialogue_started приходит позже — помечаем разговор сразу, чтобы не открыть два (BUG-009)
+	GameState.in_dialogue = true
 	DialogueManager.show_dialogue_balloon(dialogue_resource, dialogue_start)
 
 

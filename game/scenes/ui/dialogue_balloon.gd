@@ -18,7 +18,9 @@ extends CanvasLayer
 ## The action to use for advancing the dialogue
 @export var next_action: StringName = &"ui_accept"
 
-## The action to use to skip typing the dialogue
+## The action to use to skip typing the dialogue.
+## Enter (ui_accept) тоже пропускает печать: первое нажатие показывает реплику целиком,
+## второе листает дальше (BUG-008). Esc оставлен как запасной.
 @export var skip_action: StringName = &"ui_cancel"
 
 ## A sound player for voice lines (if they exist).
@@ -140,6 +142,10 @@ func apply_dialogue_line() -> void:
 
 	responses_menu.hide()
 	responses_menu.responses = dialogue_line.responses
+	# Меню ответов при заполнении забирает фокус себе, хотя ещё скрыто, — тогда Enter
+	# не пропускает печать вопроса. Пока печатается, фокус у окна; меню возьмёт его,
+	# когда покажется (BUG-008).
+	balloon.grab_focus()
 
 	# Show our balloon
 	balloon.show()
@@ -194,7 +200,7 @@ func _on_balloon_gui_input(event: InputEvent) -> void:
 	# See if we need to skip typing of the dialogue
 	if dialogue_label.is_typing:
 		var mouse_was_clicked: bool = event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed()
-		var skip_button_was_pressed: bool = event.is_action_pressed(skip_action)
+		var skip_button_was_pressed: bool = event.is_action_pressed(skip_action) or event.is_action_pressed(next_action)
 		if mouse_was_clicked or skip_button_was_pressed:
 			get_viewport().set_input_as_handled()
 			dialogue_label.skip_typing()
