@@ -6,6 +6,7 @@ signal stamp_added(mascot: String)
 signal run_reset
 
 const HUB_SCENE := "res://scenes/world.tscn"
+const FINALE_SCENE := "res://scenes/finale/finale.tscn"
 const STAMPS_FOR_FINALE := 3
 const RESTART_HOLD_TIME := 1.0
 const MISTAKE_PENALTY := 15.0
@@ -46,6 +47,9 @@ const MINIGAMES := {
 }
 
 var stamps: Array[String] = []
+## Собранные улики. Обычно приходят вместе с печатью; страницу лекции Сулус
+## может отдать в финале сам, если его зона не готова (см. docs/GAME.md).
+var clues: Array[String] = []
 ## С кем игрок уже поговорил в этом забеге.
 var met: Array[String] = []
 var secret_dialogues: Array[String] = []
@@ -86,6 +90,7 @@ func _process(delta: float) -> void:
 
 func reset_run() -> void:
 	stamps.clear()
+	clues.clear()
 	met.clear()
 	secret_dialogues.clear()
 	in_dialogue = false
@@ -108,6 +113,7 @@ func add_stamp(mascot: String) -> void:
 	if mascot in stamps:
 		return
 	stamps.append(mascot)
+	give_clue(mascot)
 	stamp_added.emit(mascot)
 
 
@@ -123,15 +129,19 @@ func can_open_finale() -> bool:
 	return stamps.size() >= STAMPS_FOR_FINALE
 
 
-## Улика выдаётся вместе с печатью, поэтому собранные улики = пройденные зоны.
+func give_clue(mascot: String) -> void:
+	if not mascot in clues:
+		clues.append(mascot)
+
+
 func has_clue(mascot: String) -> bool:
-	return has_stamp(mascot)
+	return mascot in clues
 
 
 ## Сколько собранных улик отвечает на вопрос: "where", "who" или "why".
 func clues_answering(question: String) -> int:
 	var count := 0
-	for mascot in stamps:
+	for mascot in clues:
 		if question in CLUES[mascot].answers:
 			count += 1
 	return count
@@ -155,6 +165,18 @@ func add_secret_dialogue(id: String) -> void:
 		secret_dialogues.append(id)
 
 
+## Сколько секретных диалогов нужно для «Идеального детектива».
+## Без зоны Сулуса страницу лекции до финала не получить, а значит
+## и секрет Мойто про почерк недоступен.
+func secrets_required() -> int:
+	return SECRET_DIALOGUES_TOTAL if has_minigame("sulus") else SECRET_DIALOGUES_TOTAL - 1
+
+
+## Забег окончен (концовка) — таймер больше не идёт.
+func finish_run() -> void:
+	run_active = false
+
+
 func add_mistake() -> void:
 	mistakes += 1
 
@@ -173,10 +195,16 @@ func request_minigame(mascot: String) -> void:
 	pending_minigame = mascot
 
 
+## Вызывается из диалога главной сцены: `do GameState.request_finale()`.
+func request_finale() -> void:
+	pending_minigame = "finale"
+
+
 func start_minigame(mascot: String) -> void:
 	var player := get_tree().current_scene.get_node_or_null("Player") as Node2D
 	var player_position: Vector2 = player.global_position if player else Vector2.ZERO
-	go_to_minigame(MINIGAMES[mascot], player_position)
+	var scene_path: String = FINALE_SCENE if mascot == "finale" else MINIGAMES[mascot]
+	go_to_minigame(scene_path, player_position)
 
 
 func _on_dialogue_started(_resource: DialogueResource) -> void:

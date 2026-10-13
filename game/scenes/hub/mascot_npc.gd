@@ -1,5 +1,6 @@
 extends Area2D
 ## Маскот в хабе: зона, сам маскот (пока заглушка-кружок) и разговор по Enter.
+## Используется и для главной сцены (mascot = "stage").
 ## Игрок находит его через ActionableFinder (слой 5 «Actionables») и вызывает action().
 
 @export var mascot := "manya"
@@ -10,6 +11,8 @@ extends Area2D
 @export var dialogue_start := "start"
 ## Начать разговор сразу при входе в хаб, если ещё не знакомы (Маня у входа).
 @export var auto_start := false
+## Подсказка, когда игрок рядом.
+@export var prompt := "Enter — поговорить"
 
 const BODY_RADIUS := 16.0
 const ZONE_RADIUS := 80.0
@@ -50,8 +53,8 @@ func _draw() -> void:
 		draw_circle(Vector2(BODY_RADIUS, -BODY_RADIUS), 6, STAMP_COLOR)
 
 	if _player_near and not GameState.in_dialogue:
-		draw_string(font, Vector2(-60, -BODY_RADIUS - 6), "Enter — поговорить",
-			HORIZONTAL_ALIGNMENT_CENTER, 120, 10)
+		draw_string(font, Vector2(-100, -BODY_RADIUS - 6), prompt,
+			HORIZONTAL_ALIGNMENT_CENTER, 200, 10)
 
 
 func _on_body_entered(body: Node2D) -> void:

@@ -50,6 +50,7 @@ game/
   scenes/hub/mascot_npc.tscn — маскот в хабе (зона, заглушка-кружок, разговор по Enter)
   scenes/minigames/quiz/ — викторина Мойто
   scenes/minigames/cosplay/ — «Собери образ» Кати
+  scenes/finale/       — финал: вопросы ГДЕ/КТО/ЗАЧЕМ, концовки, итоги
   scenes/ui/notebook.tscn — Детективный блокнот (Tab), ставит игру на паузу
   scenes/ui/dialogue_balloon.tscn/.gd — окно диалога (копия примера DM под 640×360, без баннера)
   scenes/test.tscn     — тестовая, удалить
@@ -109,7 +110,8 @@ game/
 
 `scripts/game_state.gd` хранит состояние текущего забега.
 
-- `stamps` — пройденные зоны (`"manya"`, `"lenya"`, `"katya"`, `"moyto"`, `"sulus"`). Улика выдаётся вместе с печатью, тексты улик лежат в `CLUES`.
+- `stamps` — пройденные зоны (`"manya"`, `"lenya"`, `"katya"`, `"moyto"`, `"sulus"`).
+- `clues` — собранные улики; `add_stamp()` выдаёт улику автоматически, `give_clue()` — улику без печати (страница Сулуса в финале). Тексты — в `CLUES`, `has_clue()` проверяет именно `clues`.
 - `clues_answering("where" | "who" | "why")` — сколько собранных улик отвечает на вопрос финала.
 - `add_stamp(mascot)`, `can_open_finale()` (≥ 3 печатей), сигнал `stamp_added`.
 - `secret_dialogues`, `mistakes`, `score_time()` = время + 15 с за ошибку.
@@ -118,6 +120,8 @@ game/
 - `has_secret()` / `add_secret_dialogue()` — секретные диалоги.
 - `in_dialogue` — идёт диалог, игрок стоит (по сигналам `DialogueManager`).
 - `MINIGAMES` — какие мини-игры готовы. Из диалога: `do GameState.request_minigame("lenya")`, игра стартует после закрытия диалога.
+- `request_finale()` — из диалога главной сцены, открывает `FINALE_SCENE`.
+- `finish_run()` — останавливает таймер (концовка); `secrets_required()` — сколько секретов нужно для «Идеального детектива».
 - `restart()` — сброс забега и возврат в хаб, вызывается удержанием R.
 
 **Окно диалога** задаётся в `project.godot` → `dialogue_manager/runtime/balloon_path`. Показывать через `DialogueManager.show_dialogue_balloon()`, а не `show_example_dialogue_balloon()`.

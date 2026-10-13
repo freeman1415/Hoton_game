@@ -10,6 +10,7 @@
 [ext_resource type="Resource" path="res://dialogue/katya.dialogue" id="10_katya"]
 [ext_resource type="Resource" path="res://dialogue/moyto.dialogue" id="11_moyto"]
 [ext_resource type="Resource" path="res://dialogue/sulus.dialogue" id="12_sulus"]
+[ext_resource type="Resource" path="res://dialogue/stage.dialogue" id="14_stage"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k0juu"]
 radius = 14.0
@@ -59,6 +60,15 @@ display_name = "Сулус"
 zone_name = "Лекторий"
 color = Color(0.6, 0.8, 0.5, 1)
 dialogue_resource = ExtResource("12_sulus")
+
+[node name="MainStage" parent="." instance=ExtResource("7_npc")]
+position = Vector2(210, 0)
+mascot = "stage"
+display_name = ""
+zone_name = "Главная сцена"
+color = Color(1, 0.85, 0.3, 1)
+dialogue_resource = ExtResource("14_stage")
+prompt = "Enter — осмотреть сцену"
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=314333407]
 position = Vector2(80, 0)
