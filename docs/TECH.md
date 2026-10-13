@@ -35,7 +35,7 @@ mcp add godot --scope local -e "GODOT_PATH=<путь>\Godot_v4.7.2-stable_win64_
 
 ```bash
 godot --headless --path game --import                      # импорт ресурсов
-godot --headless --path game --quit-after 180 res://ritm/main.tscn   # прогнать сцену ~3 с
+godot --headless --path game --quit-after 180 res://scenes/minigames/rhythm/rhythm.tscn   # прогнать сцену ~3 с
 ```
 
 ## Структура `game/`
@@ -67,7 +67,8 @@ game/
   art/ui/logo_hoton.png — логотип для титульного экрана
   art/characters/ props/ tiles/ minigames/ — пиксель-арт (черновик, собирается tools/pixel_art/build.py)
   scripts/hud.gd       — счётчик печатей в хабе
-  ritm/                — ритм-игра (Леня): main.tscn, main.gd, note.tscn, note.gd, музыка
+  scenes/minigames/rhythm/ — ритм-игра Лени: rhythm.tscn/.gd; lenya_song.wav, lenya_chart.gd, sfx_*.wav
+                         собираются tools/music/lenya_song.py (трек и карта нот из одной партитуры)
 ```
 
 Целевая (переезжать постепенно, через редактор Godot — он обновит ссылки):
@@ -106,7 +107,6 @@ game/
 - **Регистр в `res://`-путях должен совпадать с именем файла буква в букву.** Windows прощает, экспорт и Linux — нет (см. BUG-001).
 
 Известный техдолг по именам (переименовывать через редактор, не через проводник):
-- папка `ritm/` → `scenes/minigames/rhythm/`;
 - `scripts/character_body_2d.gd` → `scripts/player.gd`;
 
 ## Управление (Input Map)
@@ -153,7 +153,9 @@ game/
 
 **Гость или предмет:** тот же `mascot_npc.tscn` с `show_zone = false`, пустыми `display_name`/`zone_name` и своим `dialogue_start` (заголовок в `.dialogue`). Спрайт берётся из `art/characters/<mascot>.png`, если он есть (гости — `guest_0…5`); у предметов спрайта нет, их рисует декорация рядом.
 
-**Контракт мини-игры:** при победе вызвать `GameState.add_stamp("<маскот>")`, показать результат, по `enter` → `GameState.return_to_hub()`. Образец — `ritm/main.gd`.
+**Контракт мини-игры:** при победе вызвать `GameState.add_stamp("<маскот>")`, показать результат, по `enter` → `GameState.return_to_hub()`. Образец — `scenes/minigames/cosplay/cosplay.gd`.
+
+**Ритм-игра и музыка.** Мелодию и ноты меняют в `tools/music/lenya_song.py` (`PHRASES`), потом `python tools/music/lenya_song.py` — перепишет `lenya_song.wav` и `lenya_chart.gd`. Руками `lenya_chart.gd` не править: ноты разъедутся с музыкой. Время песни берётся из позиции звука с поправкой на задержку вывода (`AudioServer.get_time_since_last_mix()`/`get_output_latency()`), без звуковой карты — по своему таймеру.
 
 ## Leaderboard (autoload)
 

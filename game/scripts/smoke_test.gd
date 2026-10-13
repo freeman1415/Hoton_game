@@ -8,7 +8,7 @@ const SCENES := [
 	"res://scenes/ui/title.tscn",
 	"res://scenes/world.tscn",
 	"res://scenes/backstage/backstage.tscn",
-	"res://ritm/main.tscn",
+	"res://scenes/minigames/rhythm/rhythm.tscn",
 	"res://scenes/minigames/quiz/quiz.tscn",
 	"res://scenes/minigames/cosplay/cosplay.tscn",
 	"res://scenes/minigames/art/sketch_puzzle.tscn",
