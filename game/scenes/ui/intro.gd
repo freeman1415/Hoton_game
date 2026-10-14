@@ -64,16 +64,18 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.echo:
 		return
-	if event.is_action_pressed("ui_cancel"):
-		_done()
-	elif event.is_action_pressed("enter"):
-		if _typing:
-			_finish_typing()
-		else:
-			_next()
-	else:
+	var is_cancel := event.is_action_pressed("ui_cancel")
+	if not is_cancel and not event.is_action_pressed("enter"):
 		return
+	# До смены сцены: после change_scene_to_file() сцены уже нет в дереве
+	# и get_viewport() вернёт null
 	get_viewport().set_input_as_handled()
+	if is_cancel:
+		_done()
+	elif _typing:
+		_finish_typing()
+	else:
+		_next()
 
 
 func _finish_typing() -> void:
