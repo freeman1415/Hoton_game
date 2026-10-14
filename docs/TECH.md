@@ -100,7 +100,21 @@ game/
 
 ## Спрайты и хаб
 
-- Пиксель-арт собирает `python tools/pixel_art/build.py` (нужен Pillow) в `game/art/`. Сборка **перезаписывает** PNG: перерисованный вручную спрайт сначала убрать из `build.py`.
+- Пиксель-арт собирает `python tools/pixel_art/build.py` (нужен Pillow) в `game/art/` — с 2026-10-15 только игрока и эскиз Мани. Сборка **перезаписывает** PNG: перерисованный вручную спрайт сначала убрать из `build.py`.
+
+## Генерация спрайтов (ИИ, локально)
+
+Гости, декорации, пол, задники мини-игр и «Собери образ» — генерация (решение команды, `docs/ASSETS.md` → «ИИ-генерация»).
+
+- **Где:** ComfyUI в `C:\AI\ComfyUI_windows_portable` (модели: SDXL base 1.0, VAE fp16-fix, LoRA Pixel Art XL). Запуск — `C:\AI\start_ai.bat`: ComfyUI на :8188 и MCP-сервер на :9000. Видеокарта — от 8 ГБ (RTX 3070 — ~15 с на картинку).
+- **MCP** `comfyui` (ИИ-ассистент, local scope, `http://127.0.0.1:9000/mcp`) — `joenorton/comfyui-mcp-server` из `C:\AI\comfyui-mcp-server` (свой venv, `mcp<2`). Раскладка `workflows/pixel_sprite.json` — та же связка моделей, что в скриптах.
+- **Конвейер** (`tools/ai_art/`):
+  1. `assets.py` — что генерировать: промпты, размеры, надписи;
+  2. `python tools/ai_art/generate.py [фильтр] [--seeds 3] [--denoise 0.72]` — img2img от прежних спрайтов (снимок из git в `tools/ai_art/raw/_init/`), сырьё в `tools/ai_art/raw/` (в git не попадает);
+  3. `python tools/ai_art/postprocess.py [фильтр] --sheet лист.png` — лист всех вариантов для выбора; номер выбранного — в `picks.json`;
+  4. `python tools/ai_art/postprocess.py [фильтр]` — записать в `game/art/`;
+  5. `python tools/pixel_art/fix_offsets.py --write` — отступы декораций в сценах; `python tools/pixel_art/portraits.py` — портреты гостей.
+- Консоль Windows: запускать с `PYTHONIOENCODING=utf-8`, иначе вывод падает на «×».
 - **Персонажи — 64×64** (как спрайты дизайнера): маскоты, игрок, гости. Игрок: `SPRITE_OFFSET = (0, -18)`.
 - **Точка ног — низ спрайта.** Маскот: низ картинки на `BODY_RADIUS` (16 px) ниже центра NPC. Игрок: `SPRITE_OFFSET` в `scripts/character_body_2d.gd`. Декорации: `centered = false`, `offset = (-w/2, -h)`. При перерисовке размеры менять можно, но ноги должны оставаться на нижнем крае.
 - Спрайт маскота в хабе: `mascot_npc.gd` сам грузит `art/characters/<mascot>.png`. Нет файла — рисуется только зона (так у главной сцены).

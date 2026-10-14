@@ -56,7 +56,7 @@ static func style_hud_label(label: Label) -> void:
 
 
 ## Фон мини-игры: заливка цветом (видна, если окно шире 16:9) и задник
-## art/minigames/backdrop_<маскот>.png 640×360 по центру (tools/pixel_art/decor.py).
+## art/minigames/backdrop_<маскот>.png по центру, растянут на 640×360.
 static func add_backdrop(parent: Control, mascot: String, fill: Color) -> void:
 	var background := ColorRect.new()
 	background.color = fill
@@ -67,6 +67,9 @@ static func add_backdrop(parent: Control, mascot: String, fill: Color) -> void:
 		return
 	var picture := TextureRect.new()
 	picture.texture = load(path)
+	# Задник может быть мельче кадра (214×120 → ×3): растягиваем, пиксели остаются чёткими
+	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	picture.stretch_mode = TextureRect.STRETCH_SCALE
 	picture.set_anchors_preset(Control.PRESET_CENTER)
 	picture.offset_left = -320
 	picture.offset_top = -180

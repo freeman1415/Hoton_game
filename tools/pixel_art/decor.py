@@ -327,10 +327,8 @@ def stamp_empty():
 
 
 def main():
-    save(backdrop_manya(), "minigames", "backdrop_manya.png")
-    save(backdrop_moyto(), "minigames", "backdrop_moyto.png")
-    save(backdrop_sulus(), "minigames", "backdrop_sulus.png")
-    save(backdrop_katya(), "minigames", "backdrop_katya.png")
+    # Задники мини-игр с 2026-10-15 генерирует tools/ai_art/ (исходником служат
+    # функции backdrop_* отсюда — через снимок raw/_init). Здесь — только блокнот.
     save(notebook(), "notebook", "notebook.png")
     for mascot in MASCOT_COLORS:
         save(stamp(mascot), "notebook", "stamp_%s.png" % mascot)

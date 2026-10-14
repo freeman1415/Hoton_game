@@ -92,7 +92,7 @@ offset = Vector2(-80, -64)
 position = Vector2(150, -60)
 texture = ExtResource("r8")
 centered = false
-offset = Vector2(-15, -66)
+offset = Vector2(-14, -68)
 
 [node name="Crates" type="Sprite2D" parent="Decor"]
 position = Vector2(-190, -80)
@@ -104,13 +104,13 @@ offset = Vector2(-24, -40)
 position = Vector2(30, -100)
 texture = ExtResource("r10")
 centered = false
-offset = Vector2(-12, -44)
+offset = Vector2(-11, -47)
 
 [node name="Spotlight2" type="Sprite2D" parent="Decor"]
 position = Vector2(260, -40)
 texture = ExtResource("r10")
 centered = false
-offset = Vector2(-12, -44)
+offset = Vector2(-11, -47)
 
 [node name="Cable1" type="Sprite2D" parent="Decor"]
 position = Vector2(-80, 40)
@@ -128,19 +128,19 @@ offset = Vector2(-14, -16)
 position = Vector2(-60, -110)
 texture = ExtResource("r12")
 centered = false
-offset = Vector2(-32, -48)
+offset = Vector2(-32, -47)
 
 [node name="ExitCurtain" type="Sprite2D" parent="Decor"]
 position = Vector2(-280, 30)
 texture = ExtResource("r13")
 centered = false
-offset = Vector2(-17, -50)
+offset = Vector2(-16, -51)
 
 [node name="Rack2" type="Sprite2D" parent="Decor"]
 position = Vector2(-150, 150)
 texture = ExtResource("r12")
 centered = false
-offset = Vector2(-32, -48)
+offset = Vector2(-32, -47)
 
 [node name="Crates2" type="Sprite2D" parent="Decor"]
 position = Vector2(300, 160)
@@ -152,7 +152,7 @@ offset = Vector2(-24, -40)
 position = Vector2(60, 150)
 texture = ExtResource("r14")
 centered = false
-offset = Vector2(-20, -20)
+offset = Vector2(-21, -19)
 
 [node name="Mascots" type="Node2D" parent="."]
 y_sort_enabled = true
