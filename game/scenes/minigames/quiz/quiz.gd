@@ -3,6 +3,7 @@ extends Control
 ## 3 верных ответа — печать. Управление: ↑↓ + Enter или цифры 1–3.
 
 const MASCOT := "moyto"
+const MOYTO := preload("res://art/characters/moyto.png")
 const QUESTIONS_PER_ROUND := 5
 const CORRECT_TO_WIN := 3
 const TIME_PER_QUESTION := 10.0
@@ -89,6 +90,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				else:
 					get_tree().reload_current_scene()
 			elif event.is_action_pressed("ui_cancel") and not won:
+				# Esc здесь — сразу на фестиваль, меню паузы не открываем
+				get_viewport().set_input_as_handled()
 				GameState.return_to_hub()
 
 
@@ -110,6 +113,8 @@ func show_question() -> void:
 
 
 func select(i: int) -> void:
+	if i != selected:
+		Sfx.play("ui_move")
 	selected = i
 	for j in option_labels.size():
 		option_labels[j].modulate = SELECTED_COLOR if j == selected else NORMAL_COLOR
@@ -123,6 +128,7 @@ func answer(i: int) -> void:
 	state = State.FEEDBACK
 	feedback_left = FEEDBACK_TIME
 	timer_bar.hide()
+	Sfx.play("correct" if i == correct_option else "wrong")
 	if i == correct_option:
 		correct_count += 1
 		question_label.text = "Верно! Мойто радостно виляет хвостом."
@@ -144,6 +150,7 @@ func next_question() -> void:
 func finish() -> void:
 	state = State.RESULT
 	won = correct_count >= CORRECT_TO_WIN
+	Sfx.play("win" if won else "lose")
 	for label in option_labels:
 		label.text = ""
 	if won:
@@ -160,13 +167,24 @@ func finish() -> void:
 
 
 func build_ui() -> void:
-	var background := ColorRect.new()
-	background.color = Brand.RED.darkened(0.65)
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(background)
+	Brand.add_backdrop(self, MASCOT, Brand.RED.darkened(0.65))
+
+	# Мойто ведёт викторину с арены: спрайт ×2, ноги на арене задника
+	var moyto := TextureRect.new()
+	moyto.texture = MOYTO
+	moyto.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	moyto.set_anchors_preset(Control.PRESET_CENTER)
+	moyto.offset_left = -300
+	moyto.offset_right = -172
+	moyto.offset_top = 20
+	moyto.offset_bottom = 148
+	add_child(moyto)
 
 	var box := VBoxContainer.new()
 	box.set_anchors_preset(Control.PRESET_FULL_RECT)
+	# Слева место для Мойто
+	box.offset_left = 150
+	box.offset_right = -110
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_theme_constant_override("separation", 10)
 	add_child(box)

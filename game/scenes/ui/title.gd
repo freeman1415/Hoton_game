@@ -34,7 +34,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		notice_label.text = "Рекорды сброшены"
 		return
 	if event.is_action_pressed("enter"):
-		GameState.restart()
+		Sfx.play("ui_select")
+		get_tree().change_scene_to_file(GameState.INTRO_SCENE)
 
 
 func refresh_records() -> void:

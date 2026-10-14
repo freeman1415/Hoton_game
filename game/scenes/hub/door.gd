@@ -20,7 +20,9 @@ func _ready() -> void:
 
 func action() -> void:
 	if _is_closed():
+		Sfx.play("wrong")
 		return
+	Sfx.play("door")
 	if target == Target.BACKSTAGE:
 		GameState.go_to_backstage()
 	else:

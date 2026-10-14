@@ -6,6 +6,7 @@ extends Node
 
 const SCENES := [
 	"res://scenes/ui/title.tscn",
+	"res://scenes/ui/intro.tscn",
 	"res://scenes/world.tscn",
 	"res://scenes/backstage/backstage.tscn",
 	"res://scenes/minigames/rhythm/rhythm.tscn",

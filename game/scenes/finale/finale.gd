@@ -159,6 +159,7 @@ func _on_answer_picked(i: int) -> void:
 		ask_evidence()
 	else:
 		GameState.add_mistake()
+		Sfx.play("wrong")
 		say(data.wrong[i], ask.bind(current_question))
 
 
@@ -171,9 +172,11 @@ func ask_evidence() -> void:
 func _on_evidence_picked(i: int) -> void:
 	if current_question in GameState.CLUES[evidence_clues[i]].answers:
 		solved[current_question] = true
+		Sfx.play("stamp")
 		say(QUESTIONS[current_question].right, next_question.bind(current_question))
 	else:
 		GameState.add_mistake()
+		Sfx.play("wrong")
 		say(WRONG_EVIDENCE, ask_evidence)
 
 
@@ -275,7 +278,7 @@ func say(text: String, then: Callable) -> void:
 	on_continue = then
 	hide_options()
 	text_label.text = text
-	hint_label.text = "Enter — дальше"
+	hint_label.text = "Enter — дальше    Tab — блокнот"
 	highlight_speaker(text)
 
 
@@ -291,7 +294,7 @@ func show_choice(prompt: String, options: Array, picked: Callable) -> void:
 	on_pick = picked
 	choice_count = options.size()
 	text_label.text = prompt
-	hint_label.text = "↑↓ — выбрать    Enter — ответить"
+	hint_label.text = "↑↓ — выбрать    Enter — ответить    Tab — блокнот"
 	highlight_speaker("")
 	for i in option_labels.size():
 		option_labels[i].visible = i < choice_count
@@ -301,6 +304,8 @@ func show_choice(prompt: String, options: Array, picked: Callable) -> void:
 
 
 func select(i: int) -> void:
+	if i != selected and phase == Phase.CHOICE:
+		Sfx.play("ui_move")
 	selected = i
 	for j in choice_count:
 		var arrow := "> " if j == selected else "   "

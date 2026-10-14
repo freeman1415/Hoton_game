@@ -21,6 +21,7 @@ const SHADOW_COLOR := Color(0.25, 0.22, 0.3)
 
 
 func _ready() -> void:
+	Brand.style_hud_label(hint_label)
 	if GameState.finale_ending == "":
 		hint_label.text = "За кулисами музыкальной сцены\nTab — блокнот"
 		return

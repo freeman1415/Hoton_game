@@ -57,6 +57,12 @@ game/
   scenes/minigames/logic/ — «Рассади слушателей» Сулуса
   scenes/finale/       — финал: вопросы ГДЕ/КТО/ЗАЧЕМ, концовки, итоги
   scenes/ui/title.tscn — титульный экран, топ-5, Ctrl+Shift+F12 — сброс рекордов
+  scenes/ui/intro.tscn/.gd — заставка-завязка после «Начать» (кадры дизайнера art/cutscene/), Esc — пропустить
+  scenes/ui/pause_menu.gd — autoload `PauseMenu`: Esc — пауза, выход из мини-игры, главное меню
+  scripts/music.gd, scripts/sfx.gd — autoload'ы `Music` и `Sfx` (см. «Звук»)
+  audio/music/ audio/sfx/ — WAV, собираются tools/music/game_audio.py
+  art/portraits/ — портреты для окна диалога (tools/pixel_art/portraits.py)
+  art/notebook/ art/minigames/backdrop_*.png — блокнот и задники мини-игр (tools/pixel_art/decor.py)
   scenes/ui/notebook.tscn — Детективный блокнот (Tab), ставит игру на паузу
   scenes/ui/dialogue_box.tscn/.gd — окно диалога (своё): имя, текст с печатью, варианты ответа
   scripts/dialogue.gd  — autoload `Dialogue`: запуск и обрыв разговоров
@@ -129,7 +135,7 @@ game/
 | `restart` | R (удерживать 1 с) | есть, обрабатывает `GameState` |
 | `lane_0` … `lane_3` (ритм-игра) | D, F, J, K | есть |
 | `ui_accept` | Enter, Space, E, Numpad Enter | как `enter` (кнопки интерфейса); диалоги листаются по `enter` |
-| `ui_cancel` (встроенное) | Esc | выход из мини-игры в хаб после поражения |
+| `ui_cancel` (встроенное) | Esc | меню паузы (`PauseMenu`) везде, кроме титульного экрана и заставки; закрывает блокнот; после поражения в мини-игре — сразу в хаб; в заставке — пропустить |
 
 Клавиши в Input Map назначать через **physical keycode** — на фестивальных ПК будет русская раскладка.
 
@@ -182,6 +188,22 @@ func start(d: DialogueBox) -> void:
 **Контракт мини-игры:** при победе вызвать `GameState.add_stamp("<маскот>")`, показать результат, по `enter` → `GameState.return_to_hub()`. Образец — `scenes/minigames/cosplay/cosplay.gd`.
 
 **Ритм-игра и музыка.** Мелодию и ноты меняют в `tools/music/lenya_song.py` (`PHRASES`), потом `python tools/music/lenya_song.py` — перепишет `lenya_song.wav` и `lenya_chart.gd`. Руками `lenya_chart.gd` не править: ноты разъедутся с музыкой. Время песни берётся из позиции звука с поправкой на задержку вывода (`AudioServer.get_time_since_last_mix()`/`get_output_latency()`), без звуковой карты — по своему таймеру.
+
+## Звук
+
+Всё — свой синтез в духе 8-бит, без чужих семплов: `python tools/music/game_audio.py` пересобирает `game/audio/music/*.wav` и `game/audio/sfx/*.wav` (мелодия Лени для ритм-игры — отдельно, `lenya_song.py`).
+
+- **Autoload `Music`** (`scripts/music.gd`): сам выбирает трек по сцене (`SCENE_TRACKS`: титульный, заставка, хаб, закулисье, финал; в мини-играх — тема маскота, в ритм-игре тишина — там своя песня). За кулисами в финале — трек финала. Во время разговора с маскотом в хабе играет его тема (по файлу диалога `dialogue/<маскот>.gd`), хаб потом продолжается с того же места. Вручную: `Music.play("intro")`, `Music.stop()`.
+- **Autoload `Sfx`** (`scripts/sfx.gd`): `Sfx.play("ui_select")` — звук по имени из `audio/sfx/`; `Sfx.voice("Маня")` — «голос» в диалоге: писк на каждую вторую букву, как в Undertale (у каждого маскота свой тембр, гости — общий, рассказчик — тихий). Звуки: `ui_move/select/open/close`, `step_0/1`, `page`, `door`, `swap`, `correct`, `wrong`, `stamp`, `win`, `lose`, `tick`, `voice_*`.
+- Где звучит: окно диалога (голоса, выбор), шаги игрока, занавес, блокнот, меню паузы, мини-игры (ход, верно/неверно, победа/поражение), финал.
+
+## Меню паузы
+
+Autoload `PauseMenu` (`scenes/ui/pause_menu.gd`): Esc или клик по плашке «Esc — меню» в правом верхнем углу. Пункты: «Продолжить», «Вернуться на фестиваль» (в мини-играх и за кулисами до финала), «Главное меню». Не открывается на титульном экране и в заставке, во время диалога и поверх блокнота. Ставит дерево на паузу (как блокнот). Сцена, которой Esc нужен самой, помечает его обработанным — см. `docs/GOTCHAS.md`.
+
+## Портреты в диалогах
+
+Окно диалога показывает слева портрет говорящего (`art/portraits/<кто>.png`, 48×40, ×2), пока печатается реплика — покачивается. Маскот находится по имени (`GameState.MASCOT_INFO`), гость — по функции разговора (`guest_N` в `dialogue/guests.gd` → `guest_N.png`), у рассказчика портрета нет. Портреты вырезаются из спрайтов 64×64 скриптом `tools/pixel_art/portraits.py` — перерисовал спрайт, перезапусти. Нарисованный вручную портрет (с эмоциями) — убрать из `WHO` в скрипте.
 
 ## Leaderboard (autoload)
 

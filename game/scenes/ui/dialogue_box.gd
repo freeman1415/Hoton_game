@@ -15,11 +15,17 @@ signal chosen(index: int)
 const CHARS_PER_SECOND := 50.0
 const SELECTED_COLOR := Brand.SELECTED
 const NORMAL_COLOR := Brand.TEXT
+## Портреты (как в Undertale): art/portraits/<кто>.png, 48×40, в окне ×2.
+## Собираются из спрайтов tools/pixel_art/portraits.py.
+const PORTRAIT_PATH := "res://art/portraits/%s.png"
+## Пока печатается реплика, портрет покачивается — «говорит».
+const TALK_BOB_PERIOD := 0.24
 
 @onready var name_label: Label = %NameLabel
 @onready var text_label: Label = %TextLabel
 @onready var choices_box: VBoxContainer = %Choices
 @onready var hint_label: Label = %HintLabel
+@onready var portrait: TextureRect = %Portrait
 
 var _typing := false
 var _shown_chars := 0.0
@@ -28,6 +34,9 @@ var _options: Array = []
 var _selected := 0
 ## После печати сразу показать варианты (для ask)
 var _options_after_typing: Array = []
+var _speaker := ""
+## Сколько букв уже «озвучено» писком голоса
+var _voiced := 0
 
 
 func _ready() -> void:
@@ -49,6 +58,10 @@ func ask(speaker: String, text: String, options: Array) -> int:
 
 func _show_line(speaker: String, text: String) -> void:
 	show()
+	_speaker = speaker
+	_voiced = 0
+	portrait.texture = _portrait_for(speaker)
+	portrait.visible = portrait.texture != null
 	name_label.text = speaker
 	name_label.visible = speaker != ""
 	text_label.text = text
@@ -63,13 +76,41 @@ func _process(delta: float) -> void:
 	if not _typing:
 		return
 	_shown_chars += CHARS_PER_SECOND * delta
+	var bob := fmod(_shown_chars / CHARS_PER_SECOND, TALK_BOB_PERIOD) < TALK_BOB_PERIOD / 2
+	portrait.position.y = -2.0 if bob else 0.0
 	text_label.visible_characters = int(_shown_chars)
+	_voice_letters(int(_shown_chars))
 	if _shown_chars >= text_label.text.length():
 		_finish_typing()
 
 
+## Голос как в Undertale: писк на каждую вторую букву (пробелы и знаки молчат).
+func _voice_letters(shown: int) -> void:
+	shown = mini(shown, text_label.text.length())
+	while _voiced < shown:
+		var ch := text_label.text[_voiced]
+		_voiced += 1
+		if _voiced % 2 == 0 and ch.strip_edges() != "" and not ch in ".,!?…—-«»*":
+			Sfx.voice(_speaker)
+			return
+
+
+## Портрет говорящего: маскот — по имени; гость или косплеер — по разговору
+## (функция guest_N в dialogue/guests.gd). Рассказчик — без портрета.
+func _portrait_for(speaker: String) -> Texture2D:
+	if speaker == "":
+		return null
+	var id := Dialogue.current_entry()
+	for mascot in GameState.MASCOT_INFO:
+		if GameState.MASCOT_INFO[mascot].name == speaker:
+			id = mascot
+	var path := PORTRAIT_PATH % id
+	return load(path) if ResourceLoader.exists(path) else null
+
+
 func _finish_typing() -> void:
 	_typing = false
+	portrait.position.y = 0.0
 	text_label.visible_characters = -1
 	if _options_after_typing.is_empty():
 		hint_label.text = "Enter — дальше"
@@ -90,6 +131,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			_select((_selected + 1) % _options.size())
 		elif event.is_action_pressed("enter"):
 			var picked := _selected
+			Sfx.play("ui_select")
 			_clear_options()
 			chosen.emit(picked)
 	elif event.is_action_pressed("enter"):
@@ -112,6 +154,8 @@ func _show_options(options: Array) -> void:
 
 
 func _select(i: int) -> void:
+	if i != _selected and not _options.is_empty():
+		Sfx.play("ui_move")
 	_selected = i
 	for j in choices_box.get_child_count():
 		var label: Label = choices_box.get_child(j)

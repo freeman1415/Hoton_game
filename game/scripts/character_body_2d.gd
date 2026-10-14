@@ -63,9 +63,14 @@ func animate_step(delta: float) -> void:
 		_step_time = 0.0
 		sprite.offset = SPRITE_OFFSET
 		return
+	var phase_before := int(_step_time / STEP_TIME)
 	_step_time += delta
-	var up := int(_step_time / STEP_TIME) % 2 == 1
+	var phase := int(_step_time / STEP_TIME)
+	var up := phase % 2 == 1
 	sprite.offset = SPRITE_OFFSET + (Vector2.UP if up else Vector2.ZERO)
+	# Звук шага — когда нога опускается, ноги по очереди
+	if phase != phase_before and not up:
+		Sfx.play("step_%d" % (phase / 2 % 2), 0.08, -10.0)
 	
 func _physics_process(delta: float) -> void:
 	get_input()

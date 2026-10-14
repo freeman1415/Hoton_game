@@ -6,6 +6,8 @@ signal stamp_added(mascot: String)
 signal run_reset
 
 const TITLE_SCENE := "res://scenes/ui/title.tscn"
+## Заставка-завязка между титульным экраном и хабом.
+const INTRO_SCENE := "res://scenes/ui/intro.tscn"
 const HUB_SCENE := "res://scenes/world.tscn"
 const FINALE_SCENE := "res://scenes/finale/finale.tscn"
 const BACKSTAGE_SCENE := "res://scenes/backstage/backstage.tscn"

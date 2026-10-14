@@ -129,6 +129,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				else:
 					get_tree().reload_current_scene()
 			elif event.is_action_pressed("ui_cancel") and not won:
+				# Esc здесь — сразу на фестиваль, меню паузы не открываем
+				get_viewport().set_input_as_handled()
 				GameState.return_to_hub()
 
 
@@ -152,6 +154,7 @@ func start_puzzle() -> void:
 func move_cursor(step: int) -> void:
 	var count := seats.size() + 1
 	cursor = (cursor + step + count) % count
+	Sfx.play("ui_move")
 	update_seats()
 
 
@@ -161,11 +164,13 @@ func press() -> void:
 		return
 	if picked == -1:
 		picked = cursor
+		Sfx.play("ui_select")
 	elif picked != cursor:
 		var mascot: String = seats[picked]
 		seats[picked] = seats[cursor]
 		seats[cursor] = mascot
 		picked = -1
+		Sfx.play("swap")
 	else:
 		picked = -1
 	update_seats()
@@ -177,9 +182,11 @@ func check() -> void:
 	if broken == -1:
 		state = State.FEEDBACK
 		feedback_left = FEEDBACK_TIME
+		Sfx.play("correct")
 		sulus_label.text = "Сулус: Безупречная логика, коллега!"
 	else:
 		mistakes += 1
+		Sfx.play("wrong")
 		sulus_label.text = "Сулус: Хм, перечитайте условие: «%s»" % \
 			puzzles[puzzle_index].clues[broken][3].trim_suffix(".")
 	update_seats()
@@ -230,6 +237,7 @@ func next_puzzle() -> void:
 func finish(is_win: bool) -> void:
 	state = State.RESULT
 	won = is_win
+	Sfx.play("win" if won else "lose")
 	picked = -1
 	cursor = -1
 	update_seats()
@@ -292,10 +300,7 @@ func make_box(color: Color, index: int) -> StyleBoxFlat:
 
 
 func build_ui() -> void:
-	var background := ColorRect.new()
-	background.color = Brand.BROWN.darkened(0.45)
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(background)
+	Brand.add_backdrop(self, MASCOT, Brand.BROWN.darkened(0.45))
 
 	var box := VBoxContainer.new()
 	box.set_anchors_preset(Control.PRESET_FULL_RECT)

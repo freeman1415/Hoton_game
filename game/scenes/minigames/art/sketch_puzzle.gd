@@ -74,6 +74,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				else:
 					get_tree().reload_current_scene()
 			elif event.is_action_pressed("ui_cancel") and not won:
+				# Esc здесь — сразу на фестиваль, меню паузы не открываем
+				get_viewport().set_input_as_handled()
 				GameState.return_to_hub()
 
 
@@ -97,12 +99,14 @@ func move_cursor(dx: int, dy: int) -> void:
 	var x := (cursor % GRID + dx + GRID) % GRID
 	var y := (cursor / GRID + dy + GRID) % GRID
 	cursor = y * GRID + x
+	Sfx.play("ui_move")
 	grid_view.queue_redraw()
 
 
 func press() -> void:
 	if picked == -1:
 		picked = cursor
+		Sfx.play("ui_select")
 	elif picked == cursor:
 		picked = -1
 	else:
@@ -111,6 +115,7 @@ func press() -> void:
 		board[cursor] = tile
 		picked = -1
 		moves += 1
+		Sfx.play("swap")
 		if misplaced() == 0:
 			finish(true)
 			return
@@ -129,6 +134,7 @@ func update_info() -> void:
 func finish(is_win: bool) -> void:
 	state = State.RESULT
 	won = is_win
+	Sfx.play("win" if won else "lose")
 	picked = -1
 	timer_bar.hide()
 	grid_view.queue_redraw()
@@ -161,10 +167,7 @@ func draw_grid() -> void:
 
 
 func build_ui() -> void:
-	var background := ColorRect.new()
-	background.color = Brand.SALMON.darkened(0.65)
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(background)
+	Brand.add_backdrop(self, MASCOT, Brand.SALMON.darkened(0.65))
 
 	var box := VBoxContainer.new()
 	box.set_anchors_preset(Control.PRESET_FULL_RECT)

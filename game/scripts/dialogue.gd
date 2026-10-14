@@ -17,6 +17,9 @@ const BOX_SCENE := preload("res://scenes/ui/dialogue_box.tscn")
 var active := false
 
 var _box: DialogueBox
+## Файл идущего разговора (dialogue/<кто>.gd) — по нему Music включает тему маскота.
+var _script_path := ""
+var _entry := ""
 
 
 func _ready() -> void:
@@ -30,12 +33,24 @@ func start(dialogue_script: Script, entry: String = "start") -> void:
 	if active:
 		return
 	active = true
+	_script_path = dialogue_script.resource_path
+	_entry = entry
 	started.emit()
 	var lines: Object = dialogue_script.new()
 	await lines.call(entry, _box)
 	_box.hide()
 	active = false
 	ended.emit()
+
+
+## Файл идущего разговора, например "res://dialogue/manya.gd"; пусто — разговора нет.
+func current_script_path() -> String:
+	return _script_path if active else ""
+
+
+## Функция идущего разговора ("start", "guest_3"…) — по ней окно ищет портрет гостя.
+func current_entry() -> String:
+	return _entry if active else ""
 
 
 ## Оборвать разговор (рестарт, выход на титульный экран). Окно пересоздаётся:

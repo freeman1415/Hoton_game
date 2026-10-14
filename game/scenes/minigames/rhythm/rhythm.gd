@@ -43,7 +43,7 @@ const LENYA_LINES := [
 	[35, "Лучший концерт!"],
 ]
 
-enum State { PLAYING, PAUSED, RESULT }
+enum State { PLAYING, RESULT }
 
 var state := State.PLAYING
 var notes: Array = []          # копии нот из карты + "judged", "result"
@@ -116,8 +116,6 @@ func current_song_time(delta: float) -> float:
 
 
 func _process(delta: float) -> void:
-	if state == State.PAUSED:
-		return
 	if state == State.PLAYING:
 		song_time = current_song_time(delta)
 		judge_missed()
@@ -146,13 +144,6 @@ func _unhandled_input(event: InputEvent) -> void:
 				if event.is_action_pressed(LANE_ACTIONS[lane]):
 					press_lane(lane)
 					return
-			if event.is_action_pressed("ui_cancel"):
-				set_paused(true)
-		State.PAUSED:
-			if event.is_action_pressed("enter"):
-				set_paused(false)
-			elif event.is_action_pressed("ui_cancel"):
-				GameState.return_to_hub()
 		State.RESULT:
 			if event.is_action_pressed("enter"):
 				if won:
@@ -160,13 +151,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				else:
 					get_tree().reload_current_scene()
 			elif event.is_action_pressed("ui_cancel") and not won:
+				# Esc здесь — сразу на фестиваль, меню паузы не открываем
+				get_viewport().set_input_as_handled()
 				GameState.return_to_hub()
-
-
-func set_paused(paused: bool) -> void:
-	state = State.PAUSED if paused else State.PLAYING
-	music.stream_paused = paused
-	hint_label.text = "Пауза    Enter — играть дальше    Esc — на фестиваль" if paused else ""
 
 
 #region Оценка нот
@@ -271,6 +258,7 @@ func finish(is_win: bool) -> void:
 	state = State.RESULT
 	won = is_win
 	music.stop()
+	Sfx.play("win" if won else "lose")
 	var lines: Array[String] = []
 	if won:
 		GameState.add_stamp(MASCOT)

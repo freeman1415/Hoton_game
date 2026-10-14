@@ -111,6 +111,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				else:
 					get_tree().reload_current_scene()
 			elif event.is_action_pressed("ui_cancel") and not won:
+				# Esc здесь — сразу на фестиваль, меню паузы не открываем
+				get_viewport().set_input_as_handled()
 				GameState.return_to_hub()
 
 
@@ -127,6 +129,8 @@ func start_order() -> void:
 
 
 func select_slot(i: int) -> void:
+	if i != selected_slot:
+		Sfx.play("ui_move")
 	selected_slot = i
 	update_slots()
 
@@ -134,6 +138,7 @@ func select_slot(i: int) -> void:
 func change_item(step: int) -> void:
 	var count: int = SLOTS[selected_slot].items.size()
 	choice[selected_slot] = (choice[selected_slot] + step + count) % count
+	Sfx.play("swap")
 	update_slots()
 
 
@@ -159,9 +164,11 @@ func submit() -> void:
 	if wrong_slot == -1:
 		state = State.FEEDBACK
 		feedback_left = FEEDBACK_TIME
+		Sfx.play("correct")
 		katya_label.text = "Катя: Да! Это настоящий «%s»! *подмигивает*" % THEMES[theme_id].name
 	else:
 		mistakes += 1
+		Sfx.play("wrong")
 		var item := current_item(wrong_slot)
 		if item.theme == "detective":
 			katya_label.text = "Катя: %s? Это же для нового фестиваля! Мне нужен «%s»." % [
@@ -182,6 +189,7 @@ func next_order() -> void:
 func finish(is_win: bool) -> void:
 	state = State.RESULT
 	won = is_win
+	Sfx.play("win" if won else "lose")
 	timer_bar.hide()
 	if won:
 		GameState.add_stamp(MASCOT)
@@ -205,10 +213,7 @@ func draw_mannequin() -> void:
 
 
 func build_ui() -> void:
-	var background := ColorRect.new()
-	background.color = Brand.GREEN.darkened(0.7)
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(background)
+	Brand.add_backdrop(self, MASCOT, Brand.GREEN.darkened(0.7))
 
 	var box := VBoxContainer.new()
 	box.set_anchors_preset(Control.PRESET_FULL_RECT)
