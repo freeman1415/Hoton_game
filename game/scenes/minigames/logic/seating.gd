@@ -8,16 +8,16 @@ const MASCOT := "sulus"
 const TIME_LIMIT := 120.0
 const FEEDBACK_TIME := 1.5
 
-const CURSOR_COLOR := Color(1.0, 0.85, 0.3)
-const PICKED_COLOR := Color(1.0, 0.45, 0.2)
+const CURSOR_COLOR := Brand.ORANGE
+const PICKED_COLOR := Brand.RED
 
 ## Имена, цвета стульев и спрайты маскотов.
 const NAMES := {"manya": "Маня", "lenya": "Леня", "katya": "Катя", "moyto": "Мойто"}
 const COLORS := {
-	"manya": Color(0.93, 0.55, 0.65),
-	"lenya": Color(0.55, 0.7, 0.95),
-	"katya": Color(0.75, 0.55, 0.95),
-	"moyto": Color(0.95, 0.65, 0.3),
+	"manya": Brand.SALMON,
+	"lenya": Brand.BLUE,
+	"katya": Brand.GREEN,
+	"moyto": Brand.RED,
 }
 const SPRITES := {
 	"manya": preload("res://art/characters/manya.png"),
@@ -253,12 +253,12 @@ func build_seats() -> void:
 	seat_labels.clear()
 	for i in seats.size():
 		var label := Label.new()
-		label.custom_minimum_size = Vector2(64, 72)
+		label.custom_minimum_size = Vector2(76, 92)
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 		var portrait := TextureRect.new()
 		portrait.name = "Portrait"
-		portrait.position = Vector2(16, 4)
+		portrait.position = Vector2(6, 2)
 		label.add_child(portrait)
 		label.add_theme_font_size_override("font_size", 12)
 		label.add_theme_color_override("font_color", Color(0.15, 0.12, 0.1))
@@ -293,7 +293,7 @@ func make_box(color: Color, index: int) -> StyleBoxFlat:
 
 func build_ui() -> void:
 	var background := ColorRect.new()
-	background.color = Color(0.14, 0.22, 0.18)
+	background.color = Brand.BROWN.darkened(0.45)
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
@@ -317,7 +317,7 @@ func build_ui() -> void:
 
 	done_label = Label.new()
 	done_label.text = "Готово"
-	done_label.custom_minimum_size = Vector2(64, 72)
+	done_label.custom_minimum_size = Vector2(76, 92)
 	done_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	done_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	done_label.add_theme_font_size_override("font_size", 12)

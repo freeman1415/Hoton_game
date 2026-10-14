@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/backstage/backstage.gd" id="r1"]
 [ext_resource type="Texture2D" path="res://art/tiles/backstage_floor.png" id="r2"]
-[ext_resource type="Resource" path="res://dialogue/backstage.dialogue" id="r3"]
+[ext_resource type="Script" path="res://dialogue/backstage.gd" id="r3"]
 [ext_resource type="PackedScene" path="res://scenes/hub/mascot_npc.tscn" id="r4"]
 [ext_resource type="PackedScene" path="res://scenes/hub/door.tscn" id="r5"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="r6"]
@@ -45,7 +45,7 @@ mascot = "rocket_prop"
 display_name = ""
 zone_name = ""
 show_zone = false
-dialogue_resource = ExtResource("r3")
+dialogue_script = ExtResource("r3")
 dialogue_start = "rocket"
 prompt = "Enter — осмотреть ракету"
 
@@ -55,7 +55,7 @@ mascot = "crates_prop"
 display_name = ""
 zone_name = ""
 show_zone = false
-dialogue_resource = ExtResource("r3")
+dialogue_script = ExtResource("r3")
 dialogue_start = "crates"
 prompt = "Enter — осмотреть"
 
@@ -65,7 +65,7 @@ mascot = "spotlight_prop"
 display_name = ""
 zone_name = ""
 show_zone = false
-dialogue_resource = ExtResource("r3")
+dialogue_script = ExtResource("r3")
 dialogue_start = "spotlight"
 prompt = "Enter — осмотреть"
 

@@ -2,16 +2,16 @@ extends Node2D
 ## Закулисье музыкальной сцены: картонная ракета с «Космоса», коробки Мойто,
 ## прожекторы. Сюда можно зайти из хаба в любой момент — ракета заклеена.
 ## В финале (GameState.finale_ending не пуст) маскоты ждут у ракеты,
-## игрок сам открывает её — диалог dialogue/backstage.dialogue → итоги.
+## игрок сам открывает её — диалог dialogue/backstage.gd (функция rocket) → итоги.
 
 const MASCOT_SPRITE := "res://art/characters/%s.png"
 ## Где стоят маскоты в финале: вокруг ракеты (она в (150, -60)).
 const FINALE_SPOTS := {
-	"manya": Vector2(70, -20),
-	"lenya": Vector2(95, 30),
-	"katya": Vector2(205, 30),
-	"moyto": Vector2(235, -15),
-	"sulus": Vector2(250, -75),
+	"manya": Vector2(55, -15),
+	"lenya": Vector2(100, 45),
+	"katya": Vector2(205, 45),
+	"moyto": Vector2(250, -10),
+	"sulus": Vector2(265, -85),
 }
 ## «Фестиваль удался»: Сулус в тени кулис — кто это был, загадка.
 const SHADOW_SPOT := Vector2(320, -120)

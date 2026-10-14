@@ -1,14 +1,14 @@
 [gd_scene format=3]
 
 [ext_resource type="Texture2D" path="res://art/tiles/ground.png" id="r1"]
-[ext_resource type="Resource" path="res://dialogue/manya.dialogue" id="r2"]
+[ext_resource type="Script" path="res://dialogue/manya.gd" id="r2"]
 [ext_resource type="PackedScene" path="res://scenes/hub/mascot_npc.tscn" id="r3"]
-[ext_resource type="Resource" path="res://dialogue/lenya.dialogue" id="r4"]
-[ext_resource type="Resource" path="res://dialogue/katya.dialogue" id="r5"]
-[ext_resource type="Resource" path="res://dialogue/moyto.dialogue" id="r6"]
-[ext_resource type="Resource" path="res://dialogue/sulus.dialogue" id="r7"]
-[ext_resource type="Resource" path="res://dialogue/stage.dialogue" id="r8"]
-[ext_resource type="Resource" path="res://dialogue/guests.dialogue" id="r9"]
+[ext_resource type="Script" path="res://dialogue/lenya.gd" id="r4"]
+[ext_resource type="Script" path="res://dialogue/katya.gd" id="r5"]
+[ext_resource type="Script" path="res://dialogue/moyto.gd" id="r6"]
+[ext_resource type="Script" path="res://dialogue/sulus.gd" id="r7"]
+[ext_resource type="Script" path="res://dialogue/stage.gd" id="r8"]
+[ext_resource type="Script" path="res://dialogue/guests.gd" id="r9"]
 [ext_resource type="PackedScene" path="res://scenes/hub/door.tscn" id="r10"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="r11"]
 [ext_resource type="Texture2D" path="res://art/props/gate_hoton.png" id="r12"]
@@ -74,8 +74,8 @@ position = Vector2(0, 0)
 mascot = "manya"
 display_name = "Маня"
 zone_name = "Арт-маркет"
-color = Color(0.93, 0.55, 0.65, 1)
-dialogue_resource = ExtResource("r2")
+color = Color(0.894, 0.518, 0.392, 1)
+dialogue_script = ExtResource("r2")
 auto_start = true
 
 [node name="Lenya" parent="." instance=ExtResource("r3")]
@@ -83,40 +83,40 @@ position = Vector2(200, -200)
 mascot = "lenya"
 display_name = "Леня"
 zone_name = "Музыка · Космос"
-color = Color(0.55, 0.7, 0.95, 1)
-dialogue_resource = ExtResource("r4")
+color = Color(0.471, 0.69, 0.784, 1)
+dialogue_script = ExtResource("r4")
 
 [node name="Katya" parent="." instance=ExtResource("r3")]
 position = Vector2(420, 0)
 mascot = "katya"
 display_name = "Катя"
 zone_name = "Дефиле · Ретро"
-color = Color(0.75, 0.55, 0.95, 1)
-dialogue_resource = ExtResource("r5")
+color = Color(0.455, 0.69, 0.408, 1)
+dialogue_script = ExtResource("r5")
 
 [node name="Moyto" parent="." instance=ExtResource("r3")]
 position = Vector2(200, 200)
 mascot = "moyto"
 display_name = "Мойто"
 zone_name = "Конкурсы · Цирк"
-color = Color(0.95, 0.65, 0.3, 1)
-dialogue_resource = ExtResource("r6")
+color = Color(0.8, 0.361, 0.376, 1)
+dialogue_script = ExtResource("r6")
 
 [node name="Sulus" parent="." instance=ExtResource("r3")]
 position = Vector2(-200, -200)
 mascot = "sulus"
 display_name = "Сулус"
 zone_name = "Лекторий"
-color = Color(0.6, 0.8, 0.5, 1)
-dialogue_resource = ExtResource("r7")
+color = Color(0.376, 0.251, 0.188, 1)
+dialogue_script = ExtResource("r7")
 
 [node name="MainStage" parent="." instance=ExtResource("r3")]
 position = Vector2(210, 0)
 mascot = "stage"
 display_name = ""
 zone_name = "Главная сцена"
-color = Color(1, 0.85, 0.3, 1)
-dialogue_resource = ExtResource("r8")
+color = Color(0.894, 0.533, 0.141, 1)
+dialogue_script = ExtResource("r8")
 prompt = "Enter — осмотреть сцену"
 
 [node name="Guest0" parent="." instance=ExtResource("r3")]
@@ -125,7 +125,7 @@ mascot = "guest_0"
 display_name = ""
 zone_name = ""
 show_zone = false
-dialogue_resource = ExtResource("r9")
+dialogue_script = ExtResource("r9")
 dialogue_start = "guest_0"
 
 [node name="Guest1" parent="." instance=ExtResource("r3")]
@@ -134,7 +134,7 @@ mascot = "guest_1"
 display_name = ""
 zone_name = ""
 show_zone = false
-dialogue_resource = ExtResource("r9")
+dialogue_script = ExtResource("r9")
 dialogue_start = "guest_1"
 
 [node name="Guest2" parent="." instance=ExtResource("r3")]
@@ -143,7 +143,7 @@ mascot = "guest_2"
 display_name = ""
 zone_name = ""
 show_zone = false
-dialogue_resource = ExtResource("r9")
+dialogue_script = ExtResource("r9")
 dialogue_start = "guest_2"
 
 [node name="Guest3" parent="." instance=ExtResource("r3")]
@@ -152,7 +152,7 @@ mascot = "guest_3"
 display_name = ""
 zone_name = ""
 show_zone = false
-dialogue_resource = ExtResource("r9")
+dialogue_script = ExtResource("r9")
 dialogue_start = "guest_3"
 
 [node name="Guest4" parent="." instance=ExtResource("r3")]
@@ -161,7 +161,7 @@ mascot = "guest_4"
 display_name = ""
 zone_name = ""
 show_zone = false
-dialogue_resource = ExtResource("r9")
+dialogue_script = ExtResource("r9")
 dialogue_start = "guest_4"
 
 [node name="Guest5" parent="." instance=ExtResource("r3")]
@@ -170,7 +170,7 @@ mascot = "guest_5"
 display_name = ""
 zone_name = ""
 show_zone = false
-dialogue_resource = ExtResource("r9")
+dialogue_script = ExtResource("r9")
 dialogue_start = "guest_5"
 
 [node name="BackstageDoor" parent="." instance=ExtResource("r10")]

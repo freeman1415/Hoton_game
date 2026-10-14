@@ -99,8 +99,8 @@ func build_ui() -> void:
 	panel.offset_right = -24
 	panel.offset_bottom = -16
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0, 0, 0, 0.95)
-	style.border_color = Color(1, 1, 1)
+	style.bg_color = Color(Brand.BROWN_DEEP, 0.96)
+	style.border_color = Brand.ORANGE
 	style.set_border_width_all(2)
 	style.set_content_margin_all(12)
 	panel.add_theme_stylebox_override("panel", style)
@@ -114,6 +114,8 @@ func build_ui() -> void:
 	title.text = "Детективный блокнот"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 16)
+	title.theme_type_variation = &"HeaderLabel"
+	title.add_theme_color_override("font_color", Brand.ORANGE)
 	box.add_child(title)
 
 	stamps_row = HBoxContainer.new()
@@ -125,7 +127,8 @@ func build_ui() -> void:
 	clues_label.bbcode_enabled = true
 	clues_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	clues_label.add_theme_font_size_override("normal_font_size", 12)
-	clues_label.add_theme_font_size_override("bold_font_size", 13)
+	clues_label.add_theme_font_size_override("bold_font_size", 12)
+	clues_label.add_theme_font_override("bold_font", Brand.HEADER_FONT)
 	box.add_child(clues_label)
 
 	footer_label = Label.new()

@@ -14,8 +14,8 @@ const LENYA := preload("res://art/characters/lenya.png")
 
 const LANE_ACTIONS := ["lane_0", "lane_1", "lane_2", "lane_3"]
 const LANE_KEYS := ["D", "F", "J", "K"]
-const LANE_COLORS := [Color(0.95, 0.45, 0.55), Color(0.45, 0.75, 1.0), Color(0.5, 0.9, 0.55), Color(1.0, 0.75, 0.35)]
-const KEY_COLOR := Color(1.0, 0.85, 0.3)
+const LANE_COLORS := [Brand.SALMON, Brand.BLUE, Brand.GREEN, Brand.RED]
+const KEY_COLOR := Brand.ORANGE
 
 ## Геометрия дорожек (в базовом разрешении 640×360)
 const LANE_W := 44.0
@@ -305,7 +305,7 @@ func note_y(t: float) -> float:
 
 
 func draw_scene() -> void:
-	var font := ThemeDB.fallback_font
+	var font := Brand.BODY_FONT
 	var beat := fmod(maxf(song_time, 0.0), 60.0 / Chart.BPM) / (60.0 / Chart.BPM)
 	var on_beat := beat < 0.15 and state == State.PLAYING
 
@@ -319,7 +319,7 @@ func draw_scene() -> void:
 	canvas.draw_rect(stage, Color(0.45, 0.3, 0.2))
 	canvas.draw_rect(Rect2(36, 266, 140, 6), Color(0.3, 0.2, 0.14))
 	var bounce := -3.0 if on_beat else 0.0
-	canvas.draw_texture_rect(LENYA, Rect2(74, 154 + bounce, 64, 96), false)
+	canvas.draw_texture_rect(LENYA, Rect2(42, 122 + bounce, 128, 128), false)
 	canvas.draw_string(font, Vector2(16, 296), lenya_line(), HORIZONTAL_ALIGNMENT_CENTER, 180, 10)
 
 	# дорожки
@@ -429,7 +429,7 @@ func lenya_line() -> String:
 
 func build_ui() -> void:
 	var background := ColorRect.new()
-	background.color = Color(0.07, 0.08, 0.18)
+	background.color = Brand.BLUE.darkened(0.78)
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
@@ -452,7 +452,7 @@ func build_ui() -> void:
 	result_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	result_label.add_theme_font_size_override("font_size", 13)
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.03, 0.03, 0.08, 0.88)
+	style.bg_color = Color(Brand.BROWN_DEEP, 0.92)
 	result_label.add_theme_stylebox_override("normal", style)
 	result_label.hide()
 	add_child(result_label)

@@ -4,8 +4,8 @@ extends Control
 ## маскот подсказывает, ответ можно переделать (+15 с к времени).
 ## Сюжет и концовки — docs/GAME.md → «Финал» и «Концовки».
 
-const SELECTED_COLOR := Color(1.0, 0.85, 0.3)
-const NORMAL_COLOR := Color(1, 1, 1)
+const SELECTED_COLOR := Brand.SELECTED
+const NORMAL_COLOR := Brand.TEXT
 const MAX_OPTIONS := 5
 
 ## Спрайты маскотов (собираются tools/pixel_art/build.py).
@@ -63,7 +63,7 @@ const QUESTIONS := {
 
 const WRONG_EVIDENCE := "Хм… Эта улика тут ни при чём. Загляни в блокнот ещё раз."
 
-## Тексты концовок — в dialogue/backstage.dialogue: Капсулу игрок открывает
+## Тексты концовок — в dialogue/backstage.gd (rocket): Капсулу игрок открывает
 ## сам, за кулисами. Здесь только названия для итогов и лидерборда.
 const ENDINGS := {
 	"festival": {"title": "Фестиваль удался"},
@@ -330,25 +330,25 @@ func highlight_speaker(text: String) -> void:
 #region Интерфейс
 
 func draw_mascots() -> void:
-	var font := ThemeDB.fallback_font
+	var font := Brand.BODY_FONT
 	var count := GameState.MASCOTS.size()
 	var step := mascot_row.size.x / count
 	for i in count:
 		var mascot: String = GameState.MASCOTS[i]
-		var center := Vector2(step * (i + 0.5), 40)
+		var center := Vector2(step * (i + 0.5), 56)
 		if mascot == speaker:
 			center.y -= 8
 		var sprite: Texture2D = MASCOT_SPRITES[mascot]
 		# ноги — на линии center.y + 18, как раньше нижний край кружка
 		mascot_row.draw_texture(sprite, center + Vector2(-floorf(sprite.get_width() / 2.0),
 			18 - sprite.get_height()))
-		mascot_row.draw_string(font, center + Vector2(-50, 34), GameState.MASCOT_INFO[mascot].name,
+		mascot_row.draw_string(font, center + Vector2(-50, 32), GameState.MASCOT_INFO[mascot].name,
 			HORIZONTAL_ALIGNMENT_CENTER, 100, 11)
 
 
 func build_ui() -> void:
 	var background := ColorRect.new()
-	background.color = Color(0, 0, 0)
+	background.color = Brand.BROWN_DEEP
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
@@ -367,8 +367,8 @@ func build_ui() -> void:
 	panel.offset_right = -24
 	panel.offset_bottom = -12
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0, 0, 0)
-	style.border_color = Color(1, 1, 1)
+	style.bg_color = Brand.BROWN_DARK
+	style.border_color = Brand.ORANGE
 	style.set_border_width_all(2)
 	style.set_content_margin_all(12)
 	panel.add_theme_stylebox_override("panel", style)

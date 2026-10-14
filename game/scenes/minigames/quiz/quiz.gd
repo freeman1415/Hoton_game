@@ -8,8 +8,8 @@ const CORRECT_TO_WIN := 3
 const TIME_PER_QUESTION := 10.0
 const FEEDBACK_TIME := 1.2
 
-const SELECTED_COLOR := Color(1.0, 0.85, 0.3)
-const NORMAL_COLOR := Color(1, 1, 1)
+const SELECTED_COLOR := Brand.SELECTED
+const NORMAL_COLOR := Brand.TEXT
 
 ## Первый ответ в списке — верный, на экране варианты перемешиваются.
 const QUESTIONS := [
@@ -161,7 +161,7 @@ func finish() -> void:
 
 func build_ui() -> void:
 	var background := ColorRect.new()
-	background.color = Color(0.35, 0.12, 0.18)
+	background.color = Brand.RED.darkened(0.65)
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 

@@ -12,10 +12,11 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 
 from palette import *
-from characters import GUESTS, MASCOTS, guest, player
+from characters import GUESTS, guest, player
 from environment import PROPS, ground_tile, art_stall, circus_tent, lecture, \
     main_stage, music_stage, rocket, runway
 from festival import FESTIVAL_PROPS, backstage_floor, balloons, gate_hoton, planet, tea_stall
+from cosplay import COSPLAY
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "..", "game", "art")
 
@@ -69,8 +70,7 @@ def save(im, *parts):
 
 
 def main():
-    for name, draw in MASCOTS.items():
-        save(draw(), "characters", name + ".png")
+    # Маскоты — спрайты дизайнера (assets/new_assets/pixel_*.png), скопированы в game/art/characters/.
     for facing in ("down", "up", "side"):
         save(player(facing), "characters", "player_%s.png" % facing)
     for i in range(len(GUESTS)):
@@ -81,6 +81,8 @@ def main():
         save(draw(), "props", name + ".png")
     for name, draw in FESTIVAL_PROPS.items():
         save(draw(), "props", name + ".png")
+    for name, draw in COSPLAY.items():
+        save(draw(), "cosplay", name + ".png")
     save(ground_tile(), "tiles", "ground.png")
     save(backstage_floor(), "tiles", "backstage_floor.png")
     save(manya_sketch(), "minigames", "manya_sketch.png")

@@ -85,8 +85,8 @@ var _idle_warning: Label
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	DialogueManager.dialogue_started.connect(_on_dialogue_started)
-	DialogueManager.dialogue_ended.connect(_on_dialogue_ended)
+	Dialogue.started.connect(_on_dialogue_started)
+	Dialogue.ended.connect(_on_dialogue_ended)
 	_create_idle_warning()
 	if "--smoke-test" in OS.get_cmdline_user_args():
 		add_child(preload("res://scripts/smoke_test.gd").new())
@@ -117,6 +117,8 @@ func reset_run() -> void:
 	secret_dialogues.clear()
 	in_dialogue = false
 	pending_minigame = ""
+	# Недоговорённый разговор закрываем (рестарт, автосброс)
+	Dialogue.cancel()
 	finale_ending = ""
 	finale_why = false
 	mistakes = 0
@@ -158,8 +160,8 @@ func _create_idle_warning() -> void:
 	_idle_warning.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_idle_warning.add_theme_font_size_override("font_size", 14)
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0, 0, 0)
-	style.border_color = Color(1, 1, 1)
+	style.bg_color = Brand.BROWN_DEEP
+	style.border_color = Brand.ORANGE
 	style.set_border_width_all(2)
 	style.set_content_margin_all(10)
 	_idle_warning.add_theme_stylebox_override("normal", style)
@@ -293,11 +295,11 @@ func start_minigame(mascot: String) -> void:
 	go_to_minigame(scene_path, player_position)
 
 
-func _on_dialogue_started(_resource: DialogueResource) -> void:
+func _on_dialogue_started() -> void:
 	in_dialogue = true
 
 
-func _on_dialogue_ended(_resource: DialogueResource) -> void:
+func _on_dialogue_ended() -> void:
 	in_dialogue = false
 	if pending_minigame != "":
 		var mascot := pending_minigame

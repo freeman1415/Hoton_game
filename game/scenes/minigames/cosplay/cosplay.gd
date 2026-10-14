@@ -6,9 +6,12 @@ extends Control
 const MASCOT := "katya"
 const TIME_LIMIT := 60.0
 const FEEDBACK_TIME := 1.5
+const MANNEQUIN_SCALE := 2
+const LAYERS_PATH := "res://art/cosplay/%s.png"
+const KATYA := preload("res://art/characters/katya.png")
 
-const SELECTED_COLOR := Color(1.0, 0.85, 0.3)
-const NORMAL_COLOR := Color(1, 1, 1)
+const SELECTED_COLOR := Brand.SELECTED
+const NORMAL_COLOR := Brand.TEXT
 
 ## Темы прошлых фестивалей. Детали «детектива» — ловушка, его в заказах нет.
 const THEMES := {
@@ -18,23 +21,23 @@ const THEMES := {
 }
 
 const SLOTS := [
-	{"name": "Голова", "items": [
-		{"name": "Кудрявый парик", "theme": "retro", "color": Color(0.85, 0.45, 0.2)},
-		{"name": "Клоунский колпак", "theme": "circus", "color": Color(0.9, 0.25, 0.3)},
-		{"name": "Картонный шлем", "theme": "space", "color": Color(0.75, 0.75, 0.8)},
-		{"name": "Шляпа детектива", "theme": "detective", "color": Color(0.45, 0.35, 0.25)},
+	{"id": "head", "name": "Голова", "items": [
+		{"name": "Кудрявый парик", "theme": "retro"},
+		{"name": "Клоунский колпак", "theme": "circus"},
+		{"name": "Картонный шлем", "theme": "space"},
+		{"name": "Шляпа детектива", "theme": "detective"},
 	]},
-	{"name": "Костюм", "items": [
-		{"name": "Яркая куртка", "theme": "retro", "color": Color(0.95, 0.35, 0.75)},
-		{"name": "Костюм в горошек", "theme": "circus", "color": Color(0.95, 0.85, 0.2)},
-		{"name": "Скафандр из картона", "theme": "space", "color": Color(0.85, 0.85, 0.85)},
-		{"name": "Плащ детектива", "theme": "detective", "color": Color(0.6, 0.5, 0.35)},
+	{"id": "costume", "name": "Костюм", "items": [
+		{"name": "Яркая куртка", "theme": "retro"},
+		{"name": "Костюм в горошек", "theme": "circus"},
+		{"name": "Скафандр из картона", "theme": "space"},
+		{"name": "Плащ детектива", "theme": "detective"},
 	]},
-	{"name": "Аксессуар", "items": [
-		{"name": "Кассетный плеер", "theme": "retro", "color": Color(0.3, 0.3, 0.35)},
-		{"name": "Красный нос", "theme": "circus", "color": Color(1.0, 0.1, 0.1)},
-		{"name": "Ракета-рюкзак", "theme": "space", "color": Color(0.3, 0.55, 0.95)},
-		{"name": "Лупа", "theme": "detective", "color": Color(0.55, 0.8, 0.9)},
+	{"id": "accessory", "name": "Аксессуар", "items": [
+		{"name": "Кассетный плеер", "theme": "retro"},
+		{"name": "Красный нос", "theme": "circus"},
+		{"name": "Ракета-рюкзак", "theme": "space"},
+		{"name": "Лупа", "theme": "detective"},
 	]},
 ]
 
@@ -55,9 +58,16 @@ var slot_labels: Array[Label] = []
 var timer_bar: ProgressBar
 var info_label: Label
 var mannequin: Control
+## Слои одежды: art/cosplay/<слот>_<тема>.png (tools/pixel_art/cosplay.py), все 64×64
+var layers := {}
 
 
 func _ready() -> void:
+	layers.mannequin = load(LAYERS_PATH % "mannequin")
+	for slot in SLOTS:
+		for item in slot.items:
+			var key: String = "%s_%s" % [slot.id, item.theme]
+			layers[key] = load(LAYERS_PATH % key)
 	build_ui()
 	orders = THEMES.keys()
 	orders.shuffle()
@@ -185,19 +195,18 @@ func finish(is_win: bool) -> void:
 		info_label.text = "Enter — ещё раз    Esc — вернуться на фестиваль"
 
 
-## Манекен-заглушка: голова, костюм и аксессуар цветами выбранных деталей.
-## Заменить пиксельными спрайтами.
+## Манекен: слои по порядку — манекен, костюм, аксессуар, голова. Спрайты 64×64, рисуем ×2.
 func draw_mannequin() -> void:
-	var center := mannequin.size / 2
-	var unit := mannequin.size.y / 10
-	mannequin.draw_rect(Rect2(center + Vector2(-1.5, -4) * unit, Vector2(3, 2.5) * unit), current_item(0).color)
-	mannequin.draw_rect(Rect2(center + Vector2(-2, -1.3) * unit, Vector2(4, 4.5) * unit), current_item(1).color)
-	mannequin.draw_circle(center + Vector2(2.8, 0.5) * unit, unit, current_item(2).color)
+	var rect := Rect2(Vector2.ZERO, Vector2(MANNEQUIN_SCALE * 64, MANNEQUIN_SCALE * 64))
+	mannequin.draw_texture_rect(layers.mannequin, rect, false)
+	for slot in [1, 2, 0]:
+		var key: String = "%s_%s" % [SLOTS[slot].id, current_item(slot).theme]
+		mannequin.draw_texture_rect(layers[key], rect, false)
 
 
 func build_ui() -> void:
 	var background := ColorRect.new()
-	background.color = Color(0.22, 0.12, 0.3)
+	background.color = Brand.GREEN.darkened(0.7)
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
@@ -214,13 +223,21 @@ func build_ui() -> void:
 	row.add_theme_constant_override("separation", 20)
 	box.add_child(row)
 
+	var katya := TextureRect.new()
+	katya.texture = KATYA
+	katya.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	katya.custom_minimum_size = Vector2(128, 128)
+	katya.size_flags_vertical = Control.SIZE_SHRINK_END
+	row.add_child(katya)
+
 	mannequin = Control.new()
-	mannequin.custom_minimum_size = Vector2(100, 120)
+	mannequin.custom_minimum_size = Vector2(MANNEQUIN_SCALE * 64, MANNEQUIN_SCALE * 64)
 	mannequin.draw.connect(draw_mannequin)
 	row.add_child(mannequin)
 
 	var slots_box := VBoxContainer.new()
 	slots_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	slots_box.custom_minimum_size.x = 250
 	slots_box.add_theme_constant_override("separation", 10)
 	row.add_child(slots_box)
 	for i in SLOTS.size():

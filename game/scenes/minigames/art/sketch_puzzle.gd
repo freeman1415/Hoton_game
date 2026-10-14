@@ -12,8 +12,8 @@ const GAP := 2
 ## Сколько кусочков минимум стоят не на месте после перемешивания.
 const MIN_SHUFFLED := 6
 
-const CURSOR_COLOR := Color(1.0, 0.85, 0.3)
-const PICKED_COLOR := Color(1.0, 0.45, 0.2)
+const CURSOR_COLOR := Brand.ORANGE
+const PICKED_COLOR := Brand.RED
 
 ## Эскиз 240×240: собирается tools/pixel_art/build.py, раскладка как в хабе.
 const PICTURE := preload("res://art/minigames/manya_sketch.png")
@@ -156,13 +156,13 @@ func draw_grid() -> void:
 		if i == cursor and state == State.PLAYING:
 			grid_view.draw_rect(dst.grow(1), CURSOR_COLOR, false, 2.0)
 	if won:
-		grid_view.draw_string(ThemeDB.fallback_font, Vector2(204, 16), "для С.",
+		grid_view.draw_string(Brand.BODY_FONT, Vector2(204, 16), "для С.",
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.8, 0.1, 0.1))
 
 
 func build_ui() -> void:
 	var background := ColorRect.new()
-	background.color = Color(0.3, 0.18, 0.22)
+	background.color = Brand.SALMON.darkened(0.65)
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 

@@ -43,7 +43,7 @@ func refresh_records() -> void:
 
 func build_ui() -> void:
 	var background := ColorRect.new()
-	background.color = Color(0, 0, 0)
+	background.color = Brand.BROWN_DEEP
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
@@ -65,15 +65,15 @@ func build_ui() -> void:
 	logo.material = white
 	box.add_child(logo)
 
-	make_label(box, "Дело о пропавшей Капсуле", 16)
+	make_label(box, "Дело о пропавшей Капсуле", 16).theme_type_variation = &"HeaderLabel"
 	start_label = make_label(box, "Нажми Enter, чтобы начать", 13)
-	start_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
+	start_label.add_theme_color_override("font_color", Brand.ORANGE)
 
 	var spacer := Control.new()
 	spacer.custom_minimum_size.y = 6
 	box.add_child(spacer)
 
-	make_label(box, "Лучшие детективы", 12)
+	make_label(box, "Лучшие детективы", 12).theme_type_variation = &"HeaderLabel"
 	records_label = make_label(box, "", 11)
 	notice_label = make_label(box, "", 10)
 

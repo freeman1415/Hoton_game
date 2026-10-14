@@ -1,302 +1,122 @@
-"""Маскоты и игрок, вид спереди. Маскоты 32×48 (Сулус выше — 32×54), игрок 24×40.
+"""Игрок и гости фестиваля, 64×64 — под спрайты маскотов дизайнера (assets/new_assets/).
 
-Референсы: assets/all_mascots.jpg, assets/mascot_*_mono.png, картинки с hotonfest.ru.
-Все в «космических» костюмах из картона, как на общем арте организаторов.
+Стиль как у дизайнера: чёрная обводка 1 px, голова почти в половину роста,
+крупные глаза с бликом, плоская заливка. Ноги — на нижнем ряду (y = 63).
+Маскотов здесь больше нет: это спрайты дизайнера, их не генерируем.
 """
 from palette import *
 
-YELLOW_SC = (246, 206, 72, 255)
+W = 64
+BLACK = (0, 0, 0, 255)
+EYE_W = (255, 255, 255, 255)
 
-W = 32
-
-
-def legs(d, top, bottom, skin, sock=WHITE, shoe=SHOE, gap=1):
-    """Две ноги и ботинки. top..bottom — ноги, ботинки под ними."""
-    lx0, rx0 = 16 - gap - 4, 16 + gap
-    for x0 in (lx0, rx0):
-        d.rectangle([x0, top, x0 + 3, bottom], fill=skin, outline=OUT)
-        if sock:
-            d.rectangle([x0, bottom - 2, x0 + 3, bottom], fill=sock, outline=OUT)
-    d.ellipse([lx0 - 2, bottom, lx0 + 3, bottom + 4], fill=shoe, outline=OUT)
-    d.ellipse([rx0, bottom, rx0 + 5, bottom + 4], fill=shoe, outline=OUT)
+# Фирменные цвета брендбука (scripts/brand.gd)
+B_ORANGE = (228, 136, 36, 255)
+B_SALMON = (212, 132, 100, 255)
+B_BROWN = (96, 64, 48, 255)
+B_BLUE = (120, 176, 200, 255)
+B_RED = (204, 92, 96, 255)
+B_GREEN = (116, 176, 104, 255)
 
 
-def arms(d, y0, y1, sleeve, hand=WHITE, x_in=10):
-    x_out = W - 1 - x_in
-    d.rectangle([x_in - 3, y0, x_in, y1], fill=sleeve, outline=OUT)
-    d.rectangle([x_out, y0, x_out + 3, y1], fill=sleeve, outline=OUT)
-    d.ellipse([x_in - 4, y1 - 1, x_in - 1, y1 + 2], fill=hand, outline=OUT)
-    d.ellipse([x_out + 1, y1 - 1, x_out + 4, y1 + 2], fill=hand, outline=OUT)
+def outline(im):
+    return outline_pass(im, BLACK)
 
 
-def eyes(d, y, left=12, right=18, h=3, highlight=True):
+def eyes_front(d, y, left=23, right=35):
+    """Крупные глаза с бликом, как у маскотов дизайнера."""
     for x in (left, right):
-        d.rectangle([x, y, x + 1, y + h - 1], fill=EYE)
-        if highlight:
-            d.point((x + 1, y), fill=WHITE)
+        d.ellipse([x, y, x + 5, y + 7], fill=BLACK)
+        d.rectangle([x + 1, y + 1, x + 2, y + 2], fill=EYE_W)
 
 
-def manya():
-    """Маня, коровка: восьмигранный картонный шлем с антеннами, оранжевая
-    рубашка, коричневый фартук художника, колокольчик."""
-    im, d = canvas(W, 48)
-    # хвост с кисточкой
-    d.line([(20, 36), (24, 38), (26, 35)], fill=OUT)
-    d.rectangle([25, 33, 27, 34], fill=PANTS)
-    legs(d, 35, 41, WHITE, sock=WHITE)
-    for x in (12, 18):  # пятна на коленях
-        d.rectangle([x, 36, x + 1, 37], fill=(150, 95, 70, 255))
-    arms(d, 27, 32, ACCENT)
-    d.rounded_rectangle([10, 25, 21, 36], radius=2, fill=ACCENT, outline=OUT)
-    d.rectangle([12, 28, 19, 36], fill=(122, 74, 42, 255))
-    d.line([(13, 32), (18, 32)], fill=(96, 58, 34, 255))
-    d.rectangle([15, 25, 16, 27], fill=(242, 194, 48, 255), outline=OUT)
-    # антенны
-    for x0, x1 in ((11, 9), (20, 22)):
-        d.line([(x0, 5), (x1, 1)], fill=CARD_D)
-        d.ellipse([x1 - 1, 0, x1 + 1, 2], fill=CARD, outline=OUT)
-    # уши-клапаны шлема
-    ear = [(1, 12), (8, 10), (9, 16), (2, 15)]
-    d.polygon(ear, fill=CARD, outline=OUT)
-    d.polygon(mirror_x(ear, W), fill=CARD, outline=OUT)
-    d.polygon(polygon_points(15.5, 14, 11.5, 8, rot=pi / 8), fill=CARD, outline=OUT)
-    d.ellipse([9, 7, 22, 21], fill=WHITE, outline=CARD_D)
-    d.ellipse([13, 7, 18, 10], fill=(150, 95, 70, 255))  # рыжий чубчик
-    eyes(d, 12, 12, 18)
-    d.ellipse([11, 15, 20, 20], fill=PINK, outline=OUT)
-    d.point([(13, 17), (18, 17)], fill=PINK_D)
-    d.point([(10, 14), (21, 14)], fill=BLUSH)
-    return outline_pass(im)
-
-
-def lenya():
-    """Леня, олень: квадратная рамка-шлем, закрытые мечтательные глаза,
-    тёмно-синяя толстовка, широкие коричневые штаны."""
-    im, d = canvas(W, 48)
-    brown = (122, 80, 56, 255)
-    navy = (38, 52, 110, 255)
-    legs(d, 34, 41, PANTS, sock=None, gap=2)
-    d.rectangle([11, 34, 20, 38], fill=PANTS, outline=OUT)
-    arms(d, 26, 32, navy, hand=brown)
-    d.rounded_rectangle([10, 24, 21, 35], radius=2, fill=navy, outline=OUT)
-    # белая эмблема на толстовке
-    d.line([(15, 27), (15, 32)], fill=WHITE)
-    d.line([(13, 29), (17, 29)], fill=WHITE)
-    d.point([(14, 31), (16, 31)], fill=WHITE)
-    # уши оленя торчат из рамки
-    ear = [(1, 11), (7, 9), (8, 14), (3, 14)]
-    d.polygon(ear, fill=brown, outline=OUT)
-    d.polygon(mirror_x(ear, W), fill=brown, outline=OUT)
-    # рамка
-    d.rectangle([5, 2, 26, 23], fill=WHITE_SH, outline=OUT)
-    d.rectangle([7, 4, 24, 21], fill=SKY, outline=CARD_D)
-    # голубые «рожки» на рамке
-    d.rectangle([10, 3, 11, 5], fill=(80, 140, 230, 255))
-    d.rectangle([20, 3, 21, 5], fill=(80, 140, 230, 255))
+def kid(facing, coat, hat, hair, skin, scarf, ears=False, magnifier=False, pants=PANTS):
+    """Ребёнок-гость 64×64. facing: down / up / side (смотрит вправо).
+    hat: None, ("beanie", цвет) или ("detective", цвет)."""
+    im, d = canvas(W, 64)
+    # ноги и ботинки
+    for x0 in (24, 34):
+        d.rectangle([x0, 51, x0 + 5, 58], fill=pants, outline=BLACK)
+        d.rounded_rectangle([x0 - 1, 57, x0 + 6, 63], radius=2, fill=SHOE, outline=BLACK)
+    # руки за телом
+    d.rounded_rectangle([14, 37, 20, 49], radius=2, fill=coat, outline=BLACK)
+    d.rounded_rectangle([43, 37, 49, 49], radius=2, fill=coat, outline=BLACK)
+    d.ellipse([13, 46, 20, 52], fill=skin, outline=BLACK)
+    d.ellipse([43, 46, 50, 52], fill=skin, outline=BLACK)
+    # куртка
+    d.polygon([(21, 35), (42, 35), (45, 53), (18, 53)], fill=coat, outline=BLACK)
+    if facing != "up":
+        d.line([(31, 39), (31, 52)], fill=BLACK)
+        for y in (42, 47):
+            d.point([(29, y), (34, y)], fill=BLACK)
     # голова
-    d.ellipse([8, 6, 23, 21], fill=brown, outline=OUT)
-    d.polygon([(13, 6), (16, 9), (19, 6)], fill=WHITE)  # белая чёлка
-    d.ellipse([10, 14, 21, 21], fill=WHITE, outline=OUT)  # светлая морда
-    d.line([(11, 12), (13, 13)], fill=EYE)
-    d.line([(18, 13), (20, 12)], fill=EYE)
-    d.line([(14, 18), (15, 19), (16, 18), (17, 19)], fill=OUT)
-    return outline_pass(im)
-
-
-def katya():
-    """Катя, лошадка: серый космический шлем с ушками, тёмная коса,
-    зелёная куртка с трёхцветной полосой, подмигивает."""
-    im, d = canvas(W, 48)
-    skin = (196, 132, 86, 255)
-    hair = (78, 46, 34, 255)
-    green = (64, 170, 76, 255)
-    grey = (184, 184, 194, 255)
-    # хвост
-    d.polygon([(19, 33), (26, 36), (27, 42), (22, 39)], fill=hair, outline=OUT)
-    legs(d, 36, 41, skin)
-    d.rectangle([11, 33, 20, 37], fill=WHITE, outline=OUT)  # белые шорты
-    arms(d, 26, 31, green)
-    d.rounded_rectangle([10, 24, 21, 34], radius=2, fill=green, outline=OUT)
-    # полоса: белая, оранжевая, синяя
-    d.line([(10, 27), (15, 30), (21, 27)], fill=WHITE)
-    d.line([(10, 28), (15, 31), (21, 28)], fill=(232, 110, 50, 255))
-    d.line([(10, 29), (15, 32), (21, 29)], fill=(60, 120, 220, 255))
-    # коса
-    d.line([(9, 18), (8, 24), (9, 28)], fill=hair, width=2)
-    # шлем с ушками
-    for ear in ([(7, 6), (8, 0), (12, 4)], [(24, 6), (23, 0), (19, 4)]):
-        d.polygon(ear, fill=grey, outline=OUT)
-    d.ellipse([4, 2, 27, 24], fill=grey, outline=OUT)
-    for p in polygon_points(15.5, 13, 10.5, 12):
-        d.point(p, fill=(130, 130, 140, 255))  # заклёпки
-    d.ellipse([2, 11, 5, 16], fill=grey, outline=OUT)
-    d.ellipse([26, 11, 29, 16], fill=grey, outline=OUT)
-    d.ellipse([8, 6, 23, 21], fill=skin, outline=OUT)
-    d.pieslice([8, 5, 23, 20], 180, 360, fill=hair)  # чёлка
-    d.polygon([(8, 12), (11, 10), (10, 18)], fill=hair)
-    d.ellipse([12, 15, 18, 20], fill=WHITE, outline=OUT)  # светлая морда
-    d.rectangle([12, 12, 13, 14], fill=EYE)
-    d.point((13, 12), fill=WHITE)
-    d.line([(18, 13), (20, 13)], fill=EYE)  # подмигивает
-    d.point([(11, 15), (20, 15)], fill=BLUSH)
-    return outline_pass(im)
-
-
-def moyto():
-    """Мойто, собачка: голова в картонной коробке с клапанами,
-    красная футболка с белыми ромбами, шорты, хвост-завиток."""
-    im, d = canvas(W, 48)
-    fur = (196, 206, 232, 255)
-    red = (224, 72, 44, 255)
-    d.line([(20, 35), (25, 34), (26, 31), (24, 30)], fill=WHITE, width=2)  # хвост
-    legs(d, 36, 41, WHITE)
-    d.rectangle([11, 33, 20, 37], fill=(58, 42, 42, 255), outline=OUT)
-    arms(d, 25, 30, red, hand=WHITE, x_in=9)
-    d.rectangle([9, 24, 22, 34], fill=red, outline=OUT)
-    for x, y in ((15, 26), (13, 28), (17, 28), (15, 30)):
-        d.rectangle([x, y, x + 1, y + 1], fill=WHITE)
-    # коробка
-    d.polygon([(4, 3), (2, 0), (8, 1), (9, 3)], fill=CARD_L, outline=OUT)
-    d.polygon([(27, 3), (29, 0), (23, 1), (22, 3)], fill=CARD_L, outline=OUT)
-    d.rectangle([3, 3, 28, 23], fill=CARD, outline=OUT)
-    d.line([(4, 4), (27, 4)], fill=CARD_L)
-    d.ellipse([7, 6, 24, 23], fill=fur, outline=CARD_D)
-    d.ellipse([11, 14, 20, 21], fill=WHITE)
-    eyes(d, 11, 11, 18, h=4)
-    d.rectangle([15, 15, 16, 15], fill=EYE)  # нос
-    d.rectangle([15, 18, 16, 20], fill=PINK, outline=OUT)  # язык
-    d.line([(13, 17), (14, 18), (15, 17), (16, 17), (17, 18), (18, 17)], fill=OUT)
-    return outline_pass(im)
-
-
-def sulus():
-    """Сулус, бык: круглый картонный шлем с рожками, голубой свитер
-    с узором, серый фартук, широкие тёмные штаны. Выше остальных."""
-    im, d = canvas(W, 54)
-    sweater = (206, 230, 242, 255)
-    apron = (160, 158, 156, 255)
-    d.line([(21, 40), (25, 44), (24, 48)], fill=OUT)  # хвост
-    legs(d, 40, 47, PANTS, sock=None, gap=2)
-    d.rectangle([10, 38, 21, 44], fill=PANTS, outline=OUT)
-    arms(d, 27, 35, sweater, hand=WHITE, x_in=10)
-    d.rounded_rectangle([10, 25, 21, 40], radius=2, fill=sweater, outline=OUT)
-    for x in range(11, 21, 3):  # голубой узор-ромбики
-        d.point([(x + 1, 27), (x, 28), (x + 2, 28), (x + 1, 29)], fill=(110, 180, 220, 255))
-    d.rectangle([12, 31, 19, 43], fill=apron, outline=OUT)
-    # рожки и уши шлема
-    horn = [(5, 8), (0, 4), (1, 10), (6, 12)]
-    d.polygon(horn, fill=CARD, outline=OUT)
-    d.polygon(mirror_x(horn, W), fill=CARD, outline=OUT)
-    d.ellipse([4, 2, 27, 25], fill=CARD, outline=OUT)
-    d.ellipse([8, 6, 23, 21], fill=WHITE, outline=CARD_D)
-    d.point([(15, 8), (15, 9), (16, 9), (16, 8)], fill=(150, 150, 160, 255))  # отметина
-    d.line([(11, 13), (13, 13)], fill=EYE)  # невозмутимый взгляд
-    d.line([(18, 13), (20, 13)], fill=EYE)
-    d.rectangle([12, 14, 13, 14], fill=EYE)
-    d.rectangle([18, 14, 19, 14], fill=EYE)
-    d.ellipse([11, 16, 20, 20], fill=PINK, outline=OUT)
-    d.point([(13, 18), (18, 18)], fill=PINK_D)
-    return outline_pass(im)
+    d.ellipse([17, 6, 46, 35], fill=hair if facing == "up" else skin, outline=BLACK)
+    if ears:  # косплей: кошачьи ушки
+        for pts in ([(18, 14), (19, 1), (28, 8)], [(45, 14), (44, 1), (35, 8)]):
+            d.polygon(pts, fill=hair, outline=BLACK)
+        d.polygon([(21, 10), (21, 5), (25, 8)], fill=PINK)
+        d.polygon([(42, 10), (42, 5), (38, 8)], fill=PINK)
+    if facing == "down":
+        d.chord([17, 6, 46, 30], 180, 360, fill=hair, outline=BLACK)
+        d.polygon([(19, 18), (24, 14), (21, 25)], fill=hair)
+        d.polygon([(44, 18), (39, 14), (42, 25)], fill=hair)
+        eyes_front(d, 19)
+        d.point([(21, 29), (22, 29), (41, 29), (42, 29)], fill=BLUSH)
+        d.line([(30, 30), (31, 31), (32, 31), (33, 30)], fill=BLACK)
+    elif facing == "side":
+        d.chord([17, 6, 46, 30], 180, 360, fill=hair, outline=BLACK)
+        d.polygon([(17, 18), (27, 14), (25, 30), (18, 27)], fill=hair)
+        d.ellipse([37, 19, 42, 26], fill=BLACK)
+        d.rectangle([39, 20, 40, 21], fill=EYE_W)
+        d.point([(43, 29), (44, 29)], fill=BLUSH)
+        d.line([(41, 31), (43, 30)], fill=BLACK)
+    # шапка
+    if hat:
+        kind, color = hat
+        if kind == "beanie":
+            d.chord([17, 4, 46, 24], 180, 360, fill=color, outline=BLACK)
+            d.rectangle([17, 13, 46, 17], fill=color, outline=BLACK)
+            d.ellipse([28, 0, 35, 6], fill=WHITE, outline=BLACK)
+        else:  # охотничья шапка детектива (без нуара)
+            d.chord([16, 3, 47, 24], 180, 360, fill=color, outline=BLACK)
+            for x in range(20, 45, 5):
+                d.line([(x, 6), (x, 13)], fill=(118, 78, 50, 255))
+            d.line([(18, 10), (45, 10)], fill=(118, 78, 50, 255))
+            if facing == "side":
+                d.polygon([(44, 12), (54, 15), (44, 17)], fill=color, outline=BLACK)
+            else:
+                d.rectangle([14, 13, 18, 22], fill=color, outline=BLACK)   # клапаны
+                d.rectangle([45, 13, 49, 22], fill=color, outline=BLACK)
+    # шарф
+    d.rounded_rectangle([20, 32, 43, 37], radius=2, fill=scarf, outline=BLACK)
+    if facing != "up":
+        d.rectangle([35, 36, 39, 45], fill=scarf, outline=BLACK)
+    # лупа в правой руке
+    if magnifier and facing != "up":
+        d.line([(48, 48), (52, 43)], fill=B_BROWN, width=2)
+        d.ellipse([49, 33, 59, 43], fill=(200, 236, 248, 255), outline=BLACK)
+        d.ellipse([50, 34, 58, 42], outline=(150, 150, 160, 255))
+        d.point([(52, 36), (53, 36)], fill=WHITE)
+    return outline(im)
 
 
 def player(facing):
-    """Гость-детектив: шапка-охотничья (без нуара), бежевое пальто,
-    красный шарф (ноябрь в Якутске), лупа в руке. facing: down / up / side."""
-    im, d = canvas(24, 40)
-    coat = (214, 182, 130, 255)
-    coat_d = (170, 138, 92, 255)
-    hat = (140, 96, 60, 255)
-    scarf = (210, 50, 60, 255)
-    skin = (240, 200, 164, 255)
-    hair = (70, 44, 30, 255)
-    # ноги
-    for x0 in (8, 13):
-        d.rectangle([x0, 30, x0 + 2, 35], fill=PANTS, outline=OUT)
-        d.ellipse([x0 - 1, 34, x0 + 3, 38], fill=SHOE, outline=OUT)
-    # пальто
-    d.polygon([(6, 30), (8, 18), (15, 18), (17, 30)], fill=coat, outline=OUT)
-    if facing == "down":
-        d.line([(11, 21), (11, 29)], fill=coat_d)
-        d.point([(10, 23), (10, 26)], fill=OUT)
-    # руки
-    d.rectangle([4, 19, 6, 26], fill=coat, outline=OUT)
-    d.rectangle([17, 19, 19, 26], fill=coat, outline=OUT)
-    d.ellipse([4, 25, 7, 28], fill=skin, outline=OUT)
-    d.ellipse([16, 25, 19, 28], fill=skin, outline=OUT)
-    if facing != "up":  # лупа в правой руке
-        d.line([(19, 26), (21, 23)], fill=SHOE, width=1)
-        d.ellipse([19, 18, 23, 22], fill=(190, 230, 245, 255), outline=OUT)
-    # голова
-    d.ellipse([5, 5, 18, 18], fill=skin if facing != "up" else hair, outline=OUT)
-    if facing == "down":
-        d.pieslice([5, 5, 18, 18], 180, 360, fill=hair)
-        d.rectangle([8, 11, 9, 13], fill=EYE)
-        d.rectangle([14, 11, 15, 13], fill=EYE)
-        d.point([(9, 11), (15, 11)], fill=WHITE)
-        d.point([(7, 14), (16, 14)], fill=BLUSH)
-        d.line([(11, 15), (12, 15)], fill=OUT)
-    elif facing == "side":
-        d.pieslice([5, 5, 18, 18], 180, 360, fill=hair)
-        d.polygon([(5, 9), (9, 9), (8, 15), (5, 14)], fill=hair)
-        d.rectangle([14, 11, 15, 13], fill=EYE)
-        d.point((15, 11), fill=WHITE)
-        d.point((16, 14), fill=BLUSH)
-    # шапка
-    d.ellipse([4, 2, 19, 11], fill=hat, outline=OUT)
-    d.line([(6, 7), (17, 7)], fill=(110, 72, 44, 255))
-    d.point([(8, 4), (12, 3), (16, 5), (10, 6), (14, 6)], fill=(170, 124, 84, 255))
-    if facing == "side":
-        d.polygon([(17, 8), (22, 9), (17, 10)], fill=hat, outline=OUT)  # козырёк
-    else:
-        d.rectangle([3, 8, 5, 12], fill=hat, outline=OUT)  # клапаны
-        d.rectangle([18, 8, 20, 12], fill=hat, outline=OUT)
-    # шарф
-    d.rectangle([7, 17, 16, 19], fill=scarf, outline=OUT)
-    if facing != "up":
-        d.rectangle([13, 19, 15, 23], fill=scarf, outline=OUT)
-    return outline_pass(im)
+    """Гость-детектив: охотничья шапка, оранжевое пальто, красный шарф, лупа."""
+    return kid(facing, coat=B_ORANGE, hat=("detective", (150, 104, 66, 255)), hair=(70, 44, 30, 255),
+               skin=(244, 206, 172, 255), scarf=B_RED, magnifier=True)
 
 
-## Гости фестиваля: (куртка, шапка, волосы, кожа, шарф, кошачьи ушки-косплей)
+## Гости фестиваля: (куртка, шапка, волосы, кожа, шарф, кошачьи ушки)
 GUESTS = [
-    ((90, 120, 200, 255), (230, 80, 90, 255), (60, 40, 30, 255), (240, 200, 164, 255), YELLOW_SC, False),
-    ((230, 120, 60, 255), (60, 60, 70, 255), (30, 24, 22, 255), (214, 164, 120, 255), (90, 160, 220, 255), False),
-    ((120, 170, 90, 255), None, (220, 180, 90, 255), (246, 210, 180, 255), (200, 60, 70, 255), True),
-    ((150, 90, 160, 255), (250, 250, 250, 255), (90, 56, 36, 255), (226, 186, 150, 255), (250, 200, 80, 255), False),
-    ((70, 70, 90, 255), None, (20, 20, 26, 255), (236, 196, 160, 255), (230, 90, 140, 255), True),
-    ((200, 60, 70, 255), (90, 160, 220, 255), (120, 70, 40, 255), (200, 150, 110, 255), WHITE, False),
+    (B_BLUE, ("beanie", B_RED), (60, 40, 30, 255), (244, 206, 172, 255), B_ORANGE, False),
+    (B_ORANGE, ("beanie", (70, 70, 80, 255)), (30, 24, 22, 255), (214, 164, 120, 255), B_BLUE, False),
+    (B_GREEN, None, (232, 186, 100, 255), (248, 214, 186, 255), B_RED, True),
+    (B_SALMON, ("beanie", WHITE), (96, 58, 36, 255), (226, 186, 150, 255), B_GREEN, False),
+    ((80, 70, 96, 255), None, (24, 22, 28, 255), (240, 200, 166, 255), B_SALMON, True),
+    (B_RED, ("beanie", B_BLUE), (122, 72, 40, 255), (198, 146, 108, 255), WHITE, False),
 ]
 
 
 def guest(i):
-    """Гость фестиваля 24×40: зимняя куртка, шапка с помпоном или косплей-ушки."""
     coat, hat, hair, skin, scarf, ears = GUESTS[i]
-    im, d = canvas(24, 40)
-    for x0 in (8, 13):
-        d.rectangle([x0, 30, x0 + 2, 35], fill=PANTS, outline=OUT)
-        d.ellipse([x0 - 1, 34, x0 + 3, 38], fill=SHOE, outline=OUT)
-    d.polygon([(6, 30), (8, 18), (15, 18), (17, 30)], fill=coat, outline=OUT)
-    d.line([(11, 21), (11, 29)], fill=OUT)
-    d.rectangle([4, 19, 6, 26], fill=coat, outline=OUT)
-    d.rectangle([17, 19, 19, 26], fill=coat, outline=OUT)
-    d.ellipse([4, 25, 7, 28], fill=skin, outline=OUT)
-    d.ellipse([16, 25, 19, 28], fill=skin, outline=OUT)
-    d.ellipse([5, 5, 18, 18], fill=skin, outline=OUT)
-    d.pieslice([5, 5, 18, 18], 180, 360, fill=hair)
-    d.rectangle([8, 11, 9, 13], fill=EYE)
-    d.rectangle([14, 11, 15, 13], fill=EYE)
-    d.point([(7, 14), (16, 14)], fill=BLUSH)
-    d.line([(11, 15), (12, 15)], fill=OUT)
-    if ears:  # косплей: кошачьи ушки
-        d.polygon([(6, 7), (7, 1), (10, 5)], fill=hair, outline=OUT)
-        d.polygon([(17, 7), (16, 1), (13, 5)], fill=hair, outline=OUT)
-        d.point([(8, 4), (15, 4)], fill=PINK)
-    if hat:
-        d.pieslice([4, 3, 19, 14], 180, 360, fill=hat, outline=OUT)
-        d.rectangle([4, 7, 19, 9], fill=hat, outline=OUT)
-        d.ellipse([9, 0, 14, 4], fill=WHITE, outline=OUT)
-    d.rectangle([7, 17, 16, 19], fill=scarf, outline=OUT)
-    return outline_pass(im)
-
-
-MASCOTS = {"manya": manya, "lenya": lenya, "katya": katya, "moyto": moyto, "sulus": sulus}
+    return kid("down", coat, hat, hair, skin, scarf, ears=ears)

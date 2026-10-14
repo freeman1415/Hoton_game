@@ -7,8 +7,8 @@ const TEXTURES := {
 	"up": preload("res://art/characters/player_up.png"),
 	"side": preload("res://art/characters/player_side.png"),
 }
-## Ноги спрайта (40 px) — на нижнем краю коллизии (радиус 14).
-const SPRITE_OFFSET := Vector2(0, -6)
+## Ноги спрайта (64 px) — на нижнем краю коллизии (радиус 14).
+const SPRITE_OFFSET := Vector2(0, -18)
 const STEP_TIME := 0.15
 
 ## Края локации для камеры (left, top, width, height) — у хаба и закулисья свои.
@@ -80,5 +80,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("enter") and not event.is_echo():
 		var actionables = actionable_finder.get_overlapping_areas()
 		if actionables.size() > 0:
+			# Enter достался игроку — дальше его никто не обрабатывает (иначе окно
+			# диалога сразу пропустило бы печать первой реплики)
+			get_viewport().set_input_as_handled()
 			actionables[0].action()
 			return

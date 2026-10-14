@@ -36,7 +36,7 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	var font := ThemeDB.fallback_font
+	var font := Brand.BODY_FONT
 	draw_string(font, Vector2(-60, -34), label, HORIZONTAL_ALIGNMENT_CENTER, 120, 11)
 	if _player_near and not GameState.in_dialogue:
 		var text := "Сначала открой ракету!" if _is_closed() else prompt

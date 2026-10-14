@@ -8,7 +8,8 @@ extends Area2D
 @export var display_name := "Маня"
 @export var zone_name := "Арт-маркет"
 @export var color := Color.WHITE
-@export var dialogue_resource: DialogueResource
+## Файл диалога (dialogue/<кто>.gd) и функция в нём, с которой начать разговор.
+@export var dialogue_script: Script
 @export var dialogue_start := "start"
 ## Начать разговор сразу при входе в хаб, если ещё не знакомы (Маня у входа).
 @export var auto_start := false
@@ -19,7 +20,7 @@ extends Area2D
 
 const BODY_RADIUS := 16.0
 const ZONE_RADIUS := 80.0
-const STAMP_COLOR := Color(0.95, 0.75, 0.2)
+const STAMP_COLOR := Brand.ORANGE
 const SPRITE_PATH := "res://art/characters/%s.png"
 ## «Дыхание» спрайта: период в секундах.
 const BOB_PERIOD := 1.2
@@ -50,12 +51,7 @@ func _ready() -> void:
 
 
 func action() -> void:
-	if GameState.in_dialogue:
-		return
-	# Окно Dialogue Manager открывается отложенно (call_deferred), а сигнал
-	# dialogue_started приходит позже — помечаем разговор сразу, чтобы не открыть два (BUG-009)
-	GameState.in_dialogue = true
-	DialogueManager.show_dialogue_balloon(dialogue_resource, dialogue_start)
+	Dialogue.start(dialogue_script, dialogue_start)
 
 
 func _process(delta: float) -> void:
@@ -71,10 +67,10 @@ func _draw_zone() -> void:
 
 
 func _draw() -> void:
-	var font := ThemeDB.fallback_font
+	var font := Brand.BODY_FONT
 	# Название зоны — у нижнего края круга: сверху его закрыли бы декорации
 	if show_zone:
-		draw_string(font, Vector2(-ZONE_RADIUS, ZONE_RADIUS - 6), zone_name,
+		draw_string(Brand.HEADER_FONT, Vector2(-ZONE_RADIUS, ZONE_RADIUS - 6), zone_name,
 			HORIZONTAL_ALIGNMENT_CENTER, ZONE_RADIUS * 2, 12)
 
 	# Ноги спрайта — на нижнем краю тела, чтобы сортировка по Y была честной
