@@ -87,15 +87,16 @@ func _ready() -> void:
 	for i in 60:
 		stars.append(Vector3(rng.randf_range(0, 640), rng.randf_range(0, 360), rng.randf()))
 	build_ui()
-	music = make_player(SONG, -3.0)
-	sfx_hit = make_player(SFX_HIT, -8.0)
-	sfx_miss = make_player(SFX_MISS, -6.0)
+	music = make_player(SONG, -3.0, Settings.MUSIC_BUS)
+	sfx_hit = make_player(SFX_HIT, -8.0, Settings.SFX_BUS)
+	sfx_miss = make_player(SFX_MISS, -6.0, Settings.SFX_BUS)
 	music.play()
 	_started = true
 
 
-func make_player(stream: AudioStream, volume: float) -> AudioStreamPlayer:
+func make_player(stream: AudioStream, volume: float, bus: StringName) -> AudioStreamPlayer:
 	var player := AudioStreamPlayer.new()
+	player.bus = bus
 	player.stream = stream
 	player.volume_db = volume
 	add_child(player)

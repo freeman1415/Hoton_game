@@ -1,5 +1,5 @@
 extends Control
-## Титульный экран: логотип, «Enter — начать», топ-5 детективов.
+## Титульный экран: логотип, меню «Начать / Громкость / Выход», топ-5 детективов.
 ## Сюда же возвращает автосброс по бездействию (GameState.IDLE_RESET_TIME).
 ## Ctrl+Shift+F12 — сброс рекордов (для организаторов, посетителям не показываем).
 
@@ -8,7 +8,10 @@ const LOGO := preload("res://art/ui/logo_hoton.png")
 ## Логотип чёрный на прозрачном фоне — перекрашиваем в белый.
 const WHITE_SHADER := "shader_type canvas_item;\nvoid fragment() { COLOR = vec4(1.0, 1.0, 1.0, texture(TEXTURE, UV).a); }"
 
-var start_label: Label
+## Пункты меню: [текст, Callable]; «Выход» — если Settings.ALLOW_QUIT.
+var menu_items: Array = []
+var menu_labels: Array[Label] = []
+var selected := 0
 var records_label: Label
 var notice_label: Label
 var _blink := 0.0
@@ -21,7 +24,9 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_blink += delta
-	start_label.modulate.a = 0.55 + 0.45 * cos(_blink * 4.0)
+	# Выбранный пункт мигает — видно, что жать Enter
+	for i in menu_labels.size():
+		menu_labels[i].modulate.a = 0.55 + 0.45 * cos(_blink * 4.0) if i == selected else 1.0
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -33,9 +38,30 @@ func _unhandled_input(event: InputEvent) -> void:
 		refresh_records()
 		notice_label.text = "Рекорды сброшены"
 		return
-	if event.is_action_pressed("enter"):
+	# Пока открыта громкость или «Выйти?», стрелки и Enter — у PauseMenu
+	if PauseMenu.is_open():
+		return
+	if event.is_action_pressed("up"):
+		select((selected + menu_items.size() - 1) % menu_items.size())
+	elif event.is_action_pressed("down"):
+		select((selected + 1) % menu_items.size())
+	elif event.is_action_pressed("enter"):
+		get_viewport().set_input_as_handled()
 		Sfx.play("ui_select")
-		get_tree().change_scene_to_file(GameState.INTRO_SCENE)
+		(menu_items[selected][1] as Callable).call()
+
+
+func select(i: int) -> void:
+	if i != selected:
+		Sfx.play("ui_move")
+	selected = i
+	for j in menu_labels.size():
+		menu_labels[j].text = ("> " if j == i else "") + menu_items[j][0] + (" <" if j == i else "")
+		menu_labels[j].add_theme_color_override("font_color", Brand.ORANGE if j == i else Brand.CREAM)
+
+
+func start_game() -> void:
+	get_tree().change_scene_to_file(GameState.INTRO_SCENE)
 
 
 func refresh_records() -> void:
@@ -67,8 +93,12 @@ func build_ui() -> void:
 	box.add_child(logo)
 
 	make_label(box, "Дело о пропавшей Капсуле", 16).theme_type_variation = &"HeaderLabel"
-	start_label = make_label(box, "Нажми Enter, чтобы начать", 13)
-	start_label.add_theme_color_override("font_color", Brand.ORANGE)
+	menu_items = [["Начать", start_game], ["Громкость", PauseMenu.open_volume]]
+	if Settings.ALLOW_QUIT:
+		menu_items.append(["Выход", PauseMenu.open_quit])
+	for item in menu_items:
+		menu_labels.append(make_label(box, "", 13))
+	select(0)
 
 	var spacer := Control.new()
 	spacer.custom_minimum_size.y = 6
@@ -78,7 +108,7 @@ func build_ui() -> void:
 	records_label = make_label(box, "", 11)
 	notice_label = make_label(box, "", 10)
 
-	var controls := make_label(self, "Стрелки / WASD — ходить    Enter — говорить    Tab — блокнот    R (держать) — заново", 10)
+	var controls := make_label(self, "Стрелки / WASD — ходить    Enter — говорить    Tab — блокнот    Esc — меню    R (держать) — заново", 10)
 	controls.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
 	controls.offset_left = 8
 	controls.offset_right = -8

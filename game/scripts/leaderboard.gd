@@ -1,17 +1,12 @@
 extends Node
 ## Локальный лидерборд, топ-5. Autoload `Leaderboard`, файл user://leaderboard.cfg.
 ## Сортировка: больше печатей выше, при равенстве — меньше время (с штрафами).
+## Имён нет (решено 2026-10-15): запись — печати, время и пройденная концовка.
 
 const PATH := "user://leaderboard.cfg"
 const SIZE := 5
-const NAME_LENGTH := 3
-## Буквы для имени (стрелками, без клавиатурного ввода). Без Ё, Ъ, Ы, Ь — короче листать.
-const LETTERS := "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ"
 
-## Недопустимые имена (возраст 6+). Проверяются как подстрока начала имени.
-const BLOCKED_PREFIXES := ["ХУ", "БЛЯ", "ЕБ", "ПИЗ", "ПИД", "СУК", "ЖОП", "МУД", "ГОВ", "СРА", "ДЕР", "ЛОХ"]
-
-## [{name, stamps, time, ending}]
+## [{stamps, time, ending}]; ending — название концовки («Полное расследование»)
 var entries: Array = []
 
 
@@ -28,8 +23,8 @@ func load_entries() -> void:
 		var section := "entry_%d" % i
 		if not config.has_section(section):
 			break
+		# Старые записи с именем («name») читаются, имя просто не показывается
 		entries.append({
-			"name": config.get_value(section, "name", "???"),
 			"stamps": config.get_value(section, "stamps", 0),
 			"time": config.get_value(section, "time", 0.0),
 			"ending": config.get_value(section, "ending", ""),
@@ -60,8 +55,8 @@ func qualifies(stamps: int, time: float) -> bool:
 
 
 ## Добавляет результат, возвращает место (0..SIZE-1) или -1, если не попал.
-func add(player_name: String, stamps: int, time: float, ending: String) -> int:
-	var entry := {"name": player_name, "stamps": stamps, "time": time, "ending": ending}
+func add(stamps: int, time: float, ending: String) -> int:
+	var entry := {"stamps": stamps, "time": time, "ending": ending}
 	entries.append(entry)
 	entries.sort_custom(is_better)
 	entries.resize(mini(entries.size(), SIZE))
@@ -74,19 +69,12 @@ func clear() -> void:
 	save_entries()
 
 
-static func is_name_allowed(player_name: String) -> bool:
-	for prefix in BLOCKED_PREFIXES:
-		if player_name.begins_with(prefix):
-			return false
-	return true
-
-
 static func format_time(seconds: float) -> String:
 	var total := int(seconds)
 	return "%d:%02d" % [floori(total / 60.0), total % 60]
 
 
-## Строки топа для показа: «1. ДЕТ  ●●●●○  4:12». highlight — индекс строки с меткой «<».
+## Строки топа: «1.  ●●●●○  4:12  «Полное расследование»». highlight — строка с меткой «<».
 func format_lines(highlight := -1) -> Array[String]:
 	var lines: Array[String] = []
 	for i in SIZE:
@@ -94,7 +82,8 @@ func format_lines(highlight := -1) -> Array[String]:
 			var entry: Dictionary = entries[i]
 			var stamps := "●".repeat(entry.stamps) + "○".repeat(5 - entry.stamps)
 			var mark := "  <" if i == highlight else ""
-			lines.append("%d. %s   %s   %s%s" % [i + 1, entry.name, stamps, format_time(entry.time), mark])
+			var ending: String = "«%s»" % entry.ending if entry.ending != "" else ""
+			lines.append("%d.   %s   %s   %s%s" % [i + 1, stamps, format_time(entry.time), ending, mark])
 		else:
 			lines.append("%d. ---" % (i + 1))
 	return lines

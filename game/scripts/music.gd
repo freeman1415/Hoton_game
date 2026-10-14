@@ -86,6 +86,7 @@ func _switch(track: String, keep_previous := false) -> void:
 			stream.loop_end = int(stream.get_length() * stream.mix_rate)
 		player.stream = stream
 		player.volume_db = SILENT_DB
+		player.bus = Settings.MUSIC_BUS
 		add_child(player)
 		_players[track] = player
 	if not player.playing:

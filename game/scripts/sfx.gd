@@ -24,6 +24,7 @@ func _ready() -> void:
 	for i in POOL_SIZE:
 		var player := AudioStreamPlayer.new()
 		player.volume_db = VOLUME_DB
+		player.bus = Settings.SFX_BUS
 		add_child(player)
 		_pool.append(player)
 

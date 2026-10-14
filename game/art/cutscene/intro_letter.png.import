@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://defvcg0usqh77"
-path="res://.godot/imported/intro_relics.png-2b487282faeb24475fc3d7a7a111b6d5.ctex"
+uid="uid://bgoc4lv77o5c5"
+path="res://.godot/imported/intro_letter.png-ea9d22d5e8445072dc8560800258ef56.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/cutscene/intro_relics.png"
-dest_files=["res://.godot/imported/intro_relics.png-2b487282faeb24475fc3d7a7a111b6d5.ctex"]
+source_file="res://art/cutscene/intro_letter.png"
+dest_files=["res://.godot/imported/intro_letter.png-ea9d22d5e8445072dc8560800258ef56.ctex"]
 
 [params]
 

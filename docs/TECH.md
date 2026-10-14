@@ -60,6 +60,7 @@ game/
   scenes/ui/intro.tscn/.gd — заставка-завязка после «Начать» (кадры дизайнера art/cutscene/), Esc — пропустить
   scenes/ui/pause_menu.gd — autoload `PauseMenu`: Esc — пауза, выход из мини-игры, главное меню
   scripts/music.gd, scripts/sfx.gd — autoload'ы `Music` и `Sfx` (см. «Звук»)
+  scripts/settings.gd — autoload `Settings`: громкость (шины Music / SFX), user://settings.cfg, ALLOW_QUIT
   audio/music/ audio/sfx/ — WAV, собираются tools/music/game_audio.py
   art/portraits/ — портреты для окна диалога (tools/pixel_art/portraits.py)
   art/notebook/ art/minigames/backdrop_*.png — блокнот и задники мини-игр (tools/pixel_art/decor.py)
@@ -199,7 +200,11 @@ func start(d: DialogueBox) -> void:
 
 ## Меню паузы
 
-Autoload `PauseMenu` (`scenes/ui/pause_menu.gd`): Esc или клик по плашке «Esc — меню» в правом верхнем углу. Пункты: «Продолжить», «Вернуться на фестиваль» (в мини-играх и за кулисами до финала), «Главное меню». Не открывается на титульном экране и в заставке, во время диалога и поверх блокнота. Ставит дерево на паузу (как блокнот). Сцена, которой Esc нужен самой, помечает его обработанным — см. `docs/GOTCHAS.md`.
+Autoload `PauseMenu` (`scenes/ui/pause_menu.gd`): Esc или клик по плашке «Esc — меню» в правом верхнем углу. Пункты: «Продолжить», «Вернуться на фестиваль» (в мини-играх и за кулисами до финала), «Громкость», «Главное меню», «Выйти из игры» (с подтверждением). Страницы «Громкость» и «Выйти?» открывает и титульный экран (`PauseMenu.open_volume()` / `open_quit()`, без паузы).
+
+**Громкость** — autoload `Settings` (`scripts/settings.gd`): музыка и звуки по 0…10 (←→, колесо мыши), сохраняются в `user://settings.cfg`. Звук разведён по шинам `Music` (`Music`, песня ритм-игры) и `SFX` (`Sfx`, звуки мини-игр) — шины создаёт сам `Settings`, своего bus layout нет. Новый `AudioStreamPlayer` — задавать ему `bus = Settings.MUSIC_BUS` или `Settings.SFX_BUS`, иначе громкость на него не подействует.
+
+**Выход из игры:** `Settings.ALLOW_QUIT = false` убирает пункт и на титульном экране, и в меню — для фестивального ПК, чтобы посетители не закрывали игру. Не открывается на титульном экране и в заставке, во время диалога и поверх блокнота. Ставит дерево на паузу (как блокнот). Сцена, которой Esc нужен самой, помечает его обработанным — см. `docs/GOTCHAS.md`.
 
 ## Портреты в диалогах
 
@@ -207,7 +212,7 @@ Autoload `PauseMenu` (`scenes/ui/pause_menu.gd`): Esc или клик по пл�
 
 ## Leaderboard (autoload)
 
-`scripts/leaderboard.gd`: `entries` (топ-5, `{name, stamps, time, ending}`), `qualifies()`, `add()` → место или -1, `clear()`, `is_name_allowed()`, `format_lines()`. Сортировка: печати по убыванию, затем время (с штрафами) по возрастанию.
+`scripts/leaderboard.gd`: `entries` (топ-5, `{stamps, time, ending}`), `qualifies()`, `add(stamps, time, ending)` → место или -1, `clear()`, `format_lines()` — «1. ●●●●○ 4:12 «Полное расследование»». Сортировка: печати по убыванию, затем время (с штрафами) по возрастанию. Имён нет (убраны 2026-10-15): результат из топ-5 записывается сразу после итогов финала. Старые записи с полем `name` читаются, имя не показывается.
 
 ## Сохранения
 
