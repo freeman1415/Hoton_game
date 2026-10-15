@@ -187,61 +187,61 @@ y_sort_enabled = true
 position = Vector2(-110, 40)
 texture = ExtResource("r12")
 centered = false
-offset = Vector2(-40, -59)
+offset = Vector2(-40, -60)
 
 [node name="ArtStall" type="Sprite2D" parent="Decor"]
 position = Vector2(-50, -10)
 texture = ExtResource("r13")
 centered = false
-offset = Vector2(-30, -47)
+offset = Vector2(-30, -48)
 
 [node name="TeaStall" type="Sprite2D" parent="Decor"]
 position = Vector2(-250, 110)
 texture = ExtResource("r14")
 centered = false
-offset = Vector2(-31, -49)
+offset = Vector2(-30, -50)
 
 [node name="Bench1" type="Sprite2D" parent="Decor"]
 position = Vector2(-270, 170)
 texture = ExtResource("r15")
 centered = false
-offset = Vector2(-21, -19)
+offset = Vector2(-20, -20)
 
 [node name="Bench2" type="Sprite2D" parent="Decor"]
 position = Vector2(-200, 170)
 texture = ExtResource("r15")
 centered = false
-offset = Vector2(-21, -19)
+offset = Vector2(-20, -20)
 
 [node name="Lamp1" type="Sprite2D" parent="Decor"]
 position = Vector2(-320, -40)
 texture = ExtResource("r16")
 centered = false
-offset = Vector2(-5, -57)
+offset = Vector2(-6, -52)
 
 [node name="Lamp2" type="Sprite2D" parent="Decor"]
 position = Vector2(-40, 110)
 texture = ExtResource("r16")
 centered = false
-offset = Vector2(-5, -57)
+offset = Vector2(-6, -52)
 
 [node name="Bunting1" type="Sprite2D" parent="Decor"]
 position = Vector2(-60, -100)
 texture = ExtResource("r17")
 centered = false
-offset = Vector2(-33, -51)
+offset = Vector2(-36, -46)
 
 [node name="Balloons1" type="Sprite2D" parent="Decor"]
 position = Vector2(-320, 260)
 texture = ExtResource("r18")
 centered = false
-offset = Vector2(-12, -51)
+offset = Vector2(-13, -48)
 
 [node name="Rope1" type="Sprite2D" parent="Decor"]
 position = Vector2(-150, 250)
 texture = ExtResource("r19")
 centered = false
-offset = Vector2(-29, -21)
+offset = Vector2(-28, -22)
 
 [node name="Lecture" type="Sprite2D" parent="Decor"]
 position = Vector2(-200, -226)
@@ -253,13 +253,13 @@ offset = Vector2(-32, -50)
 position = Vector2(-250, -140)
 texture = ExtResource("r15")
 centered = false
-offset = Vector2(-21, -19)
+offset = Vector2(-20, -20)
 
 [node name="LectureBench2" type="Sprite2D" parent="Decor"]
 position = Vector2(-150, -140)
 texture = ExtResource("r15")
 centered = false
-offset = Vector2(-21, -19)
+offset = Vector2(-20, -20)
 
 [node name="MainStageProp" type="Sprite2D" parent="Decor"]
 position = Vector2(210, -18)
@@ -271,79 +271,79 @@ offset = Vector2(-48, -60)
 position = Vector2(120, 40)
 texture = ExtResource("r16")
 centered = false
-offset = Vector2(-5, -57)
+offset = Vector2(-6, -52)
 
 [node name="Lamp4" type="Sprite2D" parent="Decor"]
 position = Vector2(300, 40)
 texture = ExtResource("r16")
 centered = false
-offset = Vector2(-5, -57)
+offset = Vector2(-6, -52)
 
 [node name="MusicStage" type="Sprite2D" parent="Decor"]
 position = Vector2(200, -226)
 texture = ExtResource("r22")
 centered = false
-offset = Vector2(-37, -51)
+offset = Vector2(-36, -52)
 
 [node name="Rocket" type="Sprite2D" parent="Decor"]
 position = Vector2(262, -236)
 texture = ExtResource("r23")
 centered = false
-offset = Vector2(-14, -68)
+offset = Vector2(-15, -66)
 
 [node name="BackstageCurtain" type="Sprite2D" parent="Decor"]
 position = Vector2(130, -226)
 texture = ExtResource("r24")
 centered = false
-offset = Vector2(-16, -51)
+offset = Vector2(-17, -50)
 
 [node name="Planet1" type="Sprite2D" parent="Decor"]
 position = Vector2(70, -280)
 texture = ExtResource("r25")
 centered = false
-offset = Vector2(-21, -54)
+offset = Vector2(-20, -56)
 
 [node name="Planet2" type="Sprite2D" parent="Decor"]
 position = Vector2(440, -290)
 texture = ExtResource("r25")
 centered = false
-offset = Vector2(-21, -54)
+offset = Vector2(-20, -56)
 
 [node name="Star1" type="Sprite2D" parent="Decor"]
 position = Vector2(40, -200)
 texture = ExtResource("r26")
 centered = false
-offset = Vector2(-11, -47)
+offset = Vector2(-12, -44)
 
 [node name="Star2" type="Sprite2D" parent="Decor"]
 position = Vector2(330, -280)
 texture = ExtResource("r26")
 centered = false
-offset = Vector2(-11, -47)
+offset = Vector2(-12, -44)
 
 [node name="Star3" type="Sprite2D" parent="Decor"]
 position = Vector2(310, -170)
 texture = ExtResource("r26")
 centered = false
-offset = Vector2(-11, -47)
+offset = Vector2(-12, -44)
 
 [node name="Astronaut" type="Sprite2D" parent="Decor"]
 position = Vector2(390, -200)
 texture = ExtResource("r27")
 centered = false
-offset = Vector2(-21, -63)
+offset = Vector2(-22, -60)
 
 [node name="Runway" type="Sprite2D" parent="Decor"]
 position = Vector2(440, -22)
 texture = ExtResource("r28")
 centered = false
-offset = Vector2(-32, -47)
+offset = Vector2(-32, -48)
 
 [node name="Jukebox" type="Sprite2D" parent="Decor"]
 position = Vector2(540, -80)
 texture = ExtResource("r29")
 centered = false
-offset = Vector2(-15, -50)
+offset = Vector2(-16, -48)
 
 [node name="Vinyl" type="Sprite2D" parent="Decor"]
 position = Vector2(530, 100)
@@ -355,19 +355,19 @@ offset = Vector2(-22, -54)
 position = Vector2(470, 170)
 texture = ExtResource("r31")
 centered = false
-offset = Vector2(-12, -60)
+offset = Vector2(-13, -56)
 
 [node name="CircusTent" type="Sprite2D" parent="Decor"]
 position = Vector2(200, 170)
 texture = ExtResource("r32")
 centered = false
-offset = Vector2(-33, -62)
+offset = Vector2(-34, -60)
 
 [node name="Pedestal" type="Sprite2D" parent="Decor"]
 position = Vector2(80, 220)
 texture = ExtResource("r33")
 centered = false
-offset = Vector2(-14, -45)
+offset = Vector2(-16, -40)
 
 [node name="CircusSign" type="Sprite2D" parent="Decor"]
 position = Vector2(320, 250)
@@ -379,13 +379,13 @@ offset = Vector2(-24, -46)
 position = Vector2(300, 170)
 texture = ExtResource("r18")
 centered = false
-offset = Vector2(-12, -51)
+offset = Vector2(-13, -48)
 
 [node name="Rope2" type="Sprite2D" parent="Decor"]
 position = Vector2(200, 300)
 texture = ExtResource("r19")
 centered = false
-offset = Vector2(-29, -21)
+offset = Vector2(-28, -22)
 
 [node name="Walls" type="StaticBody2D" parent="."]
 

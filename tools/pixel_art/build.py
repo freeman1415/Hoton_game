@@ -71,9 +71,18 @@ def save(im, *parts):
 
 def main():
     # Маскоты — спрайты дизайнера (assets/new_assets/pixel_*.png), скопированы в game/art/characters/.
-    # Гости, декорации, пол и «Собери образ» с 2026-10-15 генерирует tools/ai_art/ — здесь их
-    # больше не рисуем, иначе сборка затрёт генерацию. Игрок с 2026-10-15 — спрайты дизайнера
-    # (assets/new_assets/mc*.png). Остался эскиз Мани.
+    # Игрок с 2026-10-15 — спрайты дизайнера (assets/new_assets/mc*.png). Пол площади и закулисья
+    # с 2026-10-15 — генерация tools/ai_art/, здесь его не рисуем.
+    for i in range(len(GUESTS)):
+        save(guest(i), "characters", "guest_%d.png" % i)
+    for name, draw in PROPS.items():
+        if name in ("pine", "gate"):  # хаб — фестиваль, не лес; вход теперь gate_hoton
+            continue
+        save(draw(), "props", name + ".png")
+    for name, draw in FESTIVAL_PROPS.items():
+        save(draw(), "props", name + ".png")
+    for name, draw in COSPLAY.items():
+        save(draw(), "cosplay", name + ".png")
     save(manya_sketch(), "minigames", "manya_sketch.png")
 
 
