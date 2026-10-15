@@ -10,6 +10,8 @@ const TITLE_SCENE := "res://scenes/ui/title.tscn"
 const INTRO_SCENE := "res://scenes/ui/intro.tscn"
 const HUB_SCENE := "res://scenes/world.tscn"
 const FINALE_SCENE := "res://scenes/finale/finale.tscn"
+## Кат-сцена концовки: открыли ракету за кулисами → кадры → итоги финала.
+const ENDING_SCENE := "res://scenes/ui/ending.tscn"
 const BACKSTAGE_SCENE := "res://scenes/backstage/backstage.tscn"
 const STAMPS_FOR_FINALE := 3
 const RESTART_HOLD_TIME := 1.0
@@ -280,8 +282,8 @@ func request_finale() -> void:
 
 ## Вызывается из диалога ракеты за кулисами, когда Капсула открыта:
 ## после диалога — экран итогов финала.
-func request_finale_summary() -> void:
-	pending_minigame = "finale_summary"
+func request_ending() -> void:
+	pending_minigame = "ending"
 
 
 ## Проход за кулисы из хаба: игрок вернётся на то же место.
@@ -306,8 +308,8 @@ func _on_dialogue_ended() -> void:
 	if pending_minigame != "":
 		var mascot := pending_minigame
 		pending_minigame = ""
-		if mascot == "finale_summary":
-			get_tree().change_scene_to_file.call_deferred(FINALE_SCENE)
+		if mascot == "ending":
+			get_tree().change_scene_to_file.call_deferred(ENDING_SCENE)
 		else:
 			start_minigame.call_deferred(mascot)
 

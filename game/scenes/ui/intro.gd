@@ -21,7 +21,7 @@ const FADE_TIME := 0.4
 ## Вспышка, когда на кадре появляется новая реликвия
 const APPEAR_TIME := 0.25
 
-## Слайды: картинка и текст. Кадры одной серии (реликвии) сменяются без
+## Слайды: картинка, текст и (необязательно) цвет картинки. Кадры одной серии (реликвии) сменяются без
 ## затемнения — новая реликвия «вспыхивает» на месте, остальные — через затемнение.
 var slides := [
 	[STAGE, "Каждый год в Якутске проходит фестиваль «Хотон»."],
@@ -100,20 +100,25 @@ func _next() -> void:
 	var texture: Texture2D = slide[0]
 	if _tween:
 		_tween.kill()
+	var tint: Color = slide[2] if slide.size() > 2 else Color.WHITE
 	if texture == previous:
 		# Прошлый переход могли оборвать на полпути
 		_frame.modulate = Color.WHITE
+		_picture.modulate = tint
 	elif previous in RELICS and texture in RELICS:
 		# Та же серия кадров: новая реликвия вспыхивает, без затемнения
 		_tween = create_tween()
 		_picture.texture = texture
+		_picture.modulate = tint
 		Sfx.play("swap")
 		_frame.modulate = Color(1.6, 1.6, 1.6)
 		_tween.tween_property(_frame, "modulate", Color.WHITE, APPEAR_TIME)
 	else:
 		_tween = create_tween()
 		_tween.tween_property(_frame, "modulate:a", 0.0, FADE_TIME if previous else 0.0)
-		_tween.tween_callback(func() -> void: _picture.texture = texture)
+		_tween.tween_callback(func() -> void:
+			_picture.texture = texture
+			_picture.modulate = tint)
 		_tween.tween_property(_frame, "modulate", Color.WHITE, FADE_TIME)
 	_text.text = slide[1]
 	_text.visible_characters = 0

@@ -17,6 +17,7 @@ const SCENE_TRACKS := {
 	"res://scenes/world.tscn": "hub",
 	"res://scenes/backstage/backstage.tscn": "backstage",
 	"res://scenes/finale/finale.tscn": "finale",
+	"res://scenes/ui/ending.tscn": "finale",
 	"res://scenes/minigames/art/sketch_puzzle.tscn": "manya",
 	"res://scenes/minigames/rhythm/rhythm.tscn": "",
 	"res://scenes/minigames/cosplay/cosplay.tscn": "katya",

@@ -17,20 +17,6 @@ const MASCOT_SPRITES := {
 	"sulus": preload("res://art/characters/sulus.png"),
 }
 
-## Кадры дизайнера: маскот в луче прожектора (art/cutscene/, 150×75, в финале ×2).
-## Показываются вместо ряда маскотов, пока говорит этот маскот.
-const SPOTLIGHT_FRAMES := {
-	"manya": preload("res://art/cutscene/finale_manya.png"),
-	"lenya": preload("res://art/cutscene/finale_lenya.png"),
-	"katya": preload("res://art/cutscene/finale_katya.png"),
-	"moyto": preload("res://art/cutscene/finale_moyto.png"),
-	"sulus": preload("res://art/cutscene/finale_sulus.png"),
-}
-const SPOTLIGHT_SIZE := Vector2(300, 150)
-## Верх панели текста: под рядом маскотов и под кадром прожектора
-const PANEL_TOP := 112
-const PANEL_TOP_SPOTLIGHT := 164
-
 const QUESTION_ORDER := ["where", "who", "why"]
 
 const QUESTIONS := {
@@ -105,8 +91,6 @@ var text_label: Label
 var option_labels: Array[Label] = []
 var hint_label: Label
 var mascot_row: Control
-var spotlight: TextureRect
-var panel: PanelContainer
 
 
 func _ready() -> void:
@@ -299,11 +283,6 @@ func highlight_speaker(text: String) -> void:
 	for mascot in GameState.MASCOTS:
 		if text.begins_with(GameState.MASCOT_INFO[mascot].name + ":"):
 			speaker = mascot
-	spotlight.visible = speaker != ""
-	mascot_row.visible = speaker == ""
-	panel.offset_top = PANEL_TOP_SPOTLIGHT if speaker != "" else PANEL_TOP
-	if speaker != "":
-		spotlight.texture = SPOTLIGHT_FRAMES[speaker]
 	mascot_row.queue_redraw()
 
 #endregion
@@ -341,21 +320,10 @@ func build_ui() -> void:
 	mascot_row.draw.connect(draw_mascots)
 	add_child(mascot_row)
 
-	spotlight = TextureRect.new()
-	spotlight.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	spotlight.offset_left = -SPOTLIGHT_SIZE.x / 2
-	spotlight.offset_right = SPOTLIGHT_SIZE.x / 2
-	spotlight.offset_top = 6
-	spotlight.offset_bottom = 6 + SPOTLIGHT_SIZE.y
-	spotlight.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	spotlight.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	spotlight.hide()
-	add_child(spotlight)
-
-	panel = PanelContainer.new()
+	var panel := PanelContainer.new()
 	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	panel.offset_left = 24
-	panel.offset_top = PANEL_TOP
+	panel.offset_top = 112
 	panel.offset_right = -24
 	panel.offset_bottom = -12
 	var style := StyleBoxFlat.new()

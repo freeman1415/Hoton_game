@@ -11,7 +11,7 @@ extends CanvasLayer
 const SELECTED_COLOR := Brand.SELECTED
 const NORMAL_COLOR := Brand.TEXT
 ## Сцены без меню: там Esc не нужен или ещё нечего ставить на паузу.
-const NO_MENU_SCENES := [GameState.TITLE_SCENE, GameState.INTRO_SCENE]
+const NO_MENU_SCENES := [GameState.TITLE_SCENE, GameState.INTRO_SCENE, GameState.ENDING_SCENE]
 
 enum Page { MAIN, VOLUME, QUIT }
 
