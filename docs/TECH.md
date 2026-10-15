@@ -19,19 +19,7 @@ Git инициализирован в корне. `.gitignore`:
 - `/.gitignore` — ОС-мусор, `build/`, `*.tmp`;
 - `game/.gitignore` — `.godot/` (кэш импорта, пересоздаётся редактором).
 
-## Godot MCP (для ИИ-ассистент)
-
-Сервер `@coding-solo/godot-mcp` позволяет ИИ-ассистент запускать редактор и проект, читать вывод отладки и создавать сцены. Он подключается **у каждого локально**, потому что путь к Godot у всех свой:
-
-```bash
-mcp add godot --scope local -e "GODOT_PATH=<путь>\Godot_v4.7.2-stable_win64_console.exe" -- npx -y "@coding-solo/godot-mcp@0.1.1"
-```
-
-- Нужен Node.js 18+.
-- Указывайте `_console.exe`, а не обычный `.exe`: только он пишет вывод в stdout.
-- После добавления перезапустите ИИ-ассистент.
-
-Проверка проекта без MCP:
+Проверка проекта из командной строки:
 
 ```bash
 godot --headless --path game --import                      # импорт ресурсов
@@ -107,7 +95,6 @@ game/
 Гости, декорации, пол, задники мини-игр и «Собери образ» — генерация (решение команды, `docs/ASSETS.md` → «ИИ-генерация»).
 
 - **Где:** ComfyUI в `C:\AI\ComfyUI_windows_portable` (модели: SDXL base 1.0, VAE fp16-fix, LoRA Pixel Art XL). Запуск — `C:\AI\start_ai.bat`: ComfyUI на :8188 и MCP-сервер на :9000. Видеокарта — от 8 ГБ (RTX 3070 — ~15 с на картинку).
-- **MCP** `comfyui` (ИИ-ассистент, local scope, `http://127.0.0.1:9000/mcp`) — `joenorton/comfyui-mcp-server` из `C:\AI\comfyui-mcp-server` (свой venv, `mcp<2`). Раскладка `workflows/pixel_sprite.json` — та же связка моделей, что в скриптах.
 - **Конвейер** (`tools/ai_art/`):
   1. `assets.py` — что генерировать: промпты, размеры, надписи;
   2. `python tools/ai_art/generate.py [фильтр] [--seeds 3] [--denoise 0.72]` — img2img от прежних спрайтов (снимок из git в `tools/ai_art/raw/_init/`), сырьё в `tools/ai_art/raw/` (в git не попадает);

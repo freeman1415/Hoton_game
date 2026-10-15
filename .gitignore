@@ -22,3 +22,4 @@ __pycache__/
 
 # Сырые генерации ComfyUI (tools/ai_art/generate.py) — в git не кладём
 tools/ai_art/raw/
+
