@@ -8,7 +8,7 @@ const TEXTURES := {
 	"side": preload("res://art/characters/player_side.png"),
 }
 ## Ноги спрайта (64 px) — на нижнем краю коллизии (радиус 14).
-const SPRITE_OFFSET := Vector2(0, -18)
+const SPRITE_OFFSET := Vector2(0, -17)
 const STEP_TIME := 0.15
 
 ## Края локации для камеры (left, top, width, height) — у хаба и закулисья свои.

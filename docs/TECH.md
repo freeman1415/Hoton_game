@@ -115,7 +115,7 @@ game/
   4. `python tools/ai_art/postprocess.py [фильтр]` — записать в `game/art/`;
   5. `python tools/pixel_art/fix_offsets.py --write` — отступы декораций в сценах; `python tools/pixel_art/portraits.py` — портреты гостей.
 - Консоль Windows: запускать с `PYTHONIOENCODING=utf-8`, иначе вывод падает на «×».
-- **Персонажи — 64×64** (как спрайты дизайнера): маскоты, игрок, гости. Игрок: `SPRITE_OFFSET = (0, -18)`.
+- **Персонажи — 64×64** (как спрайты дизайнера): маскоты, игрок, гости. Игрок: `SPRITE_OFFSET = (0, -17)`.
 - **Точка ног — низ спрайта.** Маскот: низ картинки на `BODY_RADIUS` (16 px) ниже центра NPC. Игрок: `SPRITE_OFFSET` в `scripts/character_body_2d.gd`. Декорации: `centered = false`, `offset = (-w/2, -h)`. При перерисовке размеры менять можно, но ноги должны оставаться на нижнем крае.
 - Спрайт маскота в хабе: `mascot_npc.gd` сам грузит `art/characters/<mascot>.png`. Нет файла — рисуется только зона (так у главной сцены).
 - Хаб (`world.tscn`) сортируется по Y (`y_sort_enabled`): декорации — в узле `Decor`, плитка — `Ground` (`z_index = -10`), круги зон — `z_index = -1`. Края карты — стены в `collisions` и `limit_*` у камеры.

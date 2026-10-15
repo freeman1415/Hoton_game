@@ -12,7 +12,7 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 
 from palette import *
-from characters import GUESTS, guest, player
+from characters import GUESTS, guest
 from environment import PROPS, ground_tile, art_stall, circus_tent, lecture, \
     main_stage, music_stage, rocket, runway
 from festival import FESTIVAL_PROPS, backstage_floor, balloons, gate_hoton, planet, tea_stall
@@ -72,9 +72,8 @@ def save(im, *parts):
 def main():
     # Маскоты — спрайты дизайнера (assets/new_assets/pixel_*.png), скопированы в game/art/characters/.
     # Гости, декорации, пол и «Собери образ» с 2026-10-15 генерирует tools/ai_art/ — здесь их
-    # больше не рисуем, иначе сборка затрёт генерацию. Остались игрок и эскиз Мани.
-    for facing in ("down", "up", "side"):
-        save(player(facing), "characters", "player_%s.png" % facing)
+    # больше не рисуем, иначе сборка затрёт генерацию. Игрок с 2026-10-15 — спрайты дизайнера
+    # (assets/new_assets/mc*.png). Остался эскиз Мани.
     save(manya_sketch(), "minigames", "manya_sketch.png")
 
 
